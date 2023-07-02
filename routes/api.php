@@ -27,6 +27,10 @@ Route::get('/', function () {
 // AUTH
 Route::post('login', 'App\Http\Controllers\AuthController@login');
 
+Route::prefix('v1')->group( function() {
+    Route::post('user', 'App\Http\Controllers\UserController@store');
+});
+
 #Route::apiResource('', 'App\Http\Controllers\Controller');
 Route::prefix('v1')->middleware('jwt.auth')->group(function(){
     // Auth
