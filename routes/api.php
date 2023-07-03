@@ -40,27 +40,27 @@ Route::prefix('v1')->middleware('jwt.auth')->group(function(){
 
     // Route::apiResource('user', 'App\Http\Controllers\UserController');
 
-    Route::apiResource('championship', 'App\Http\Controllers\ChampionshipController');
-    Route::apiResource('championshipEdition', 'App\Http\Controllers\ChampionshipEditionController');
-    Route::apiResource('championshipRound', 'App\Http\Controllers\ChampionshipRoundController');
-    Route::apiResource('city', 'App\Http\Controllers\CityController');
-    Route::apiResource('coach', 'App\Http\Controllers\CoachController');
-    Route::apiResource('matchGoalStats', 'App\Http\MatchCardsStatsControllers\MatchGoalStatsController');
-    Route::apiResource('matchGoalStats', 'App\Http\Controllers\MatchGoalStatsController');
-    Route::apiResource('matchLineup', 'App\Http\Controllers\MatchLineupController');
-    Route::apiResource('player', 'App\Http\Controllers\PlayerController');
-    Route::apiResource('playerEdition', 'App\Http\Controllers\PlayerEditionController');
+    // Route::apiResource('championship', 'App\Http\Controllers\ChampionshipController');
+    // Route::apiResource('championshipEdition', 'App\Http\Controllers\ChampionshipEditionController');
+    // Route::apiResource('championshipRound', 'App\Http\Controllers\ChampionshipRoundController');
+    // Route::apiResource('city', 'App\Http\Controllers\CityController');
+    // Route::apiResource('coach', 'App\Http\Controllers\CoachController');
+    // Route::apiResource('matchGoalStats', 'App\Http\MatchCardsStatsControllers\MatchGoalStatsController');
+    // Route::apiResource('matchGoalStats', 'App\Http\Controllers\MatchGoalStatsController');
+    // Route::apiResource('matchLineup', 'App\Http\Controllers\MatchLineupController');
+    // Route::apiResource('player', 'App\Http\Controllers\PlayerController');
+    // Route::apiResource('playerEdition', 'App\Http\Controllers\PlayerEditionController');
     // Route::apiResource('playerGameScoreChampionshipEdition', 'App\Http\Controllers\PlayerGameScoreChampionshipEditionController');
     // Route::get('/api/playerGameScoreChampionshipEdition/{scoreEdition}', [PlayerGameScoreController::class, 'show']);
-    Route::apiResource('playerGameScore', 'App\Http\Controllers\PlayerGameScoreController');
-    Route::apiResource('positionPlayer', 'App\Http\Controllers\PositionPlayerController');
-    Route::apiResource('soccerMatch', 'App\Http\Controllers\SoccerMatchController');
+    // Route::apiResource('playerGameScore', 'App\Http\Controllers\PlayerGameScoreController');
+    // Route::apiResource('positionPlayer', 'App\Http\Controllers\PositionPlayerController');
+    // Route::apiResource('soccerMatch', 'App\Http\Controllers\SoccerMatchController');
 
-    Route::apiResource('stadiumFootballController', 'App\Http\Controllers\StadiumFootballController');
+    // Route::apiResource('stadiumFootballController', 'App\Http\Controllers\StadiumFootballController');
     Route::apiResource('state', 'App\Http\Controllers\StateController');
-    Route::apiResource('statusLineup', 'App\Http\Controllers\StatusLineupController');
-    Route::apiResource('substitution', 'App\Http\Controllers\SubstitutionController');
-    Route::apiResource('teamController', 'App\Http\Controllers\TeamController');
+    // Route::apiResource('statusLineup', 'App\Http\Controllers\StatusLineupController');
+    // Route::apiResource('substitution', 'App\Http\Controllers\SubstitutionController');
+    // Route::apiResource('teamController', 'App\Http\Controllers\TeamController');
 });
 
 // Route::apiResource('', 'App\Http\Controllers\TeamGameController');
