@@ -28,7 +28,9 @@ Route::get('/', function () {
 Route::post('login', 'App\Http\Controllers\AuthController@login');
 
 Route::prefix('v1')->group( function() {
-    Route::post('user', 'App\Http\Controllers\UserController@store');
+    // Route::post('user', 'App\Http\Controllers\UserController@store');
+    Route::post('user', [UserController::class, 'store'])->name('users.store');
+
 });
 
 #Route::apiResource('', 'App\Http\Controllers\Controller');
