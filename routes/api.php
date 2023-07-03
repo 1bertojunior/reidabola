@@ -38,7 +38,7 @@ Route::prefix('v1')->middleware('jwt.auth')->group(function(){
     Route::post('me', 'App\Http\Controllers\AuthController@me');
     Route::post('refresh', 'App\Http\Controllers\AuthController@refresh');
 
-    Route::apiResource('user', 'App\Http\Controllers\UserController');
+    // Route::apiResource('user', 'App\Http\Controllers\UserController');
 
     Route::apiResource('championship', 'App\Http\Controllers\ChampionshipController');
     Route::apiResource('championshipEdition', 'App\Http\Controllers\ChampionshipEditionController');
