@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
+
 
 class AuthController extends Controller
 {
@@ -26,6 +28,26 @@ class AuthController extends Controller
 
         // return JWT
         return response()->json( $result['msg'], $result['status'] );
+    }
+
+    public function register(Request $request){
+        $data = $request->all();
+
+        $user = new User([
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'nick' => $data['password'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['password'])
+        ]);
+        
+        $request->validate($user->rules(), $user->feedback());
+        $user->save();
+        
+        return response()->json([
+            'msg' => 'User created successfully',
+            'user' => $user
+        ], 201);
     }
 
     public function logout(){

@@ -43,12 +43,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->all();
-
-        $request->validate($this->user->rules(), $this->user->feedback());
-        $data['password'] = bcrypt($data['password']);
-        $state = $this->user->create($data);
-        return $state;
+        //
     }
 
     /**

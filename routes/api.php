@@ -24,21 +24,41 @@ Route::get('/', function () {
     ];
 });
 
-// AUTH
-Route::post('login', 'App\Http\Controllers\AuthController@login');
+Route::prefix('v1')->group(function () {
+    // Auth
+    Route::post('login', 'App\Http\Controllers\AuthController@login');
+    Route::post('register', 'App\Http\Controllers\AuthController@register');
 
-Route::prefix('v1')->group( function() {
-    // Route::post('user', 'App\Http\Controllers\UserController@store');
-    Route::post('user', [App\Http\Controllers\UserController::class, 'store'])->name('users.store');
+    // PROTECTED
+    Route::middleware('jwt.auth')->group(function(){
+        // Auth
+        Route::post('logout', 'App\Http\Controllers\AuthController@logout');
+        Route::post('me', 'App\Http\Controllers\AuthController@me');
+        Route::post('refresh', 'App\Http\Controllers\AuthController@refresh');
+
+        // OTHERS
+        Route::apiResource('state', 'App\Http\Controllers\StateController');
+
+    });
 
 });
 
-#Route::apiResource('', 'App\Http\Controllers\Controller');
-Route::prefix('v1')->middleware('jwt.auth')->group(function(){
-    // Auth
-    Route::post('logout', 'App\Http\Controllers\AuthController@logout');
-    Route::post('me', 'App\Http\Controllers\AuthController@me');
-    Route::post('refresh', 'App\Http\Controllers\AuthController@refresh');
+// Route::prefix('v1')->group( function() {
+//     Route::post('login', 'App\Http\Controllers\AuthController@login');
+//     Route::post('register', 'App\Http\Controllers\UserController@register');
+// });
+
+// Route::prefix('v1')->middleware('jwt.auth')->group(function(){
+//     // Auth
+//     Route::post('logout', 'App\Http\Controllers\AuthController@logout');
+//     Route::post('me', 'App\Http\Controllers\AuthController@me');
+//     Route::post('refresh', 'App\Http\Controllers\AuthController@refresh');
+
+//     Route::apiResource('state', 'App\Http\Controllers\StateController');
+
+// });
+
+
 
     // Route::apiResource('user', 'App\Http\Controllers\UserController');
 
@@ -59,11 +79,10 @@ Route::prefix('v1')->middleware('jwt.auth')->group(function(){
     // Route::apiResource('soccerMatch', 'App\Http\Controllers\SoccerMatchController');
 
     // Route::apiResource('stadiumFootballController', 'App\Http\Controllers\StadiumFootballController');
-    Route::apiResource('state', 'App\Http\Controllers\StateController');
     // Route::apiResource('statusLineup', 'App\Http\Controllers\StatusLineupController');
     // Route::apiResource('substitution', 'App\Http\Controllers\SubstitutionController');
     // Route::apiResource('teamController', 'App\Http\Controllers\TeamController');
-});
+// });
 
 // Route::apiResource('', 'App\Http\Controllers\TeamGameController');
 // Route::apiResource('', 'App\Http\Controllers\TeamGameController');
