@@ -36,7 +36,7 @@ class AuthController extends Controller
         $user = new User([
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],
-            'nick' => $data['password'],
+            'nick' => $data['nick'],
             'email' => $data['email'],
             'password' => bcrypt($data['password'])
         ]);
