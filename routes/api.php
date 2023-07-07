@@ -38,7 +38,9 @@ Route::prefix('v1')->group(function () {
 
         // OTHERS
         Route::apiResource('state', 'App\Http\Controllers\StateController');
-        Route::apiResource('city', 'App\Http\Controllers\CityController');
+        // Route::apiResource('city', 'App\Http\Controllers\CityController');
+        Route::apiResource('teamGame', 'App\Http\Controllers\TeamGameController');
+
 
     });
 
