@@ -38,6 +38,7 @@ Route::prefix('v1')->group(function () {
 
         // OTHERS
         Route::apiResource('state', 'App\Http\Controllers\StateController');
+        Route::apiResource('city', 'App\Http\Controllers\CityController');
 
     });
 
@@ -65,7 +66,6 @@ Route::prefix('v1')->group(function () {
     // Route::apiResource('championship', 'App\Http\Controllers\ChampionshipController');
     // Route::apiResource('championshipEdition', 'App\Http\Controllers\ChampionshipEditionController');
     // Route::apiResource('championshipRound', 'App\Http\Controllers\ChampionshipRoundController');
-    // Route::apiResource('city', 'App\Http\Controllers\CityController');
     // Route::apiResource('coach', 'App\Http\Controllers\CoachController');
     // Route::apiResource('matchGoalStats', 'App\Http\MatchCardsStatsControllers\MatchGoalStatsController');
     // Route::apiResource('matchGoalStats', 'App\Http\Controllers\MatchGoalStatsController');
