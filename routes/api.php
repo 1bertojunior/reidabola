@@ -46,6 +46,9 @@ Route::prefix('v1')->group(function () {
 
 });
 
+
+
+
 // Route::prefix('v1')->group( function() {
 //     Route::post('login', 'App\Http\Controllers\AuthController@login');
 //     Route::post('register', 'App\Http\Controllers\UserController@register');

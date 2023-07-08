@@ -17,7 +17,7 @@ class TeamGameController extends Controller
 
     public function index()
     {
-        $teamGames = $this->teamGame->all();
+        $teamGames = $this->teamGame->with('user')->get();
         return $teamGames;
     }
 
@@ -33,10 +33,13 @@ class TeamGameController extends Controller
 
     public function show($id)
     {
-        $result = $this->teamGame->find($id);
-        if( $result === null) $result = response()->json([ 'error' => "Nenhum dado encontrado."], 404);
+        $result = $this->teamGame->with('user')->find($id);
+        if ($result === null) {
+            $result = response()->json(['error' => "Nenhum dado encontrado."], 404);
+        }
         return $result;
     }
+
 
     public function update(Request $request, $id)
     {

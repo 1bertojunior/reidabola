@@ -91,4 +91,8 @@ class User extends Authenticatable implements JWTSubject
             'nick.unique' => 'O nickname fornecido já está em uso.',
         ];
     }
+
+    // public function teamGame(){
+    //     return $this->hasOne(TeamGame::class);
+    // }
 }
