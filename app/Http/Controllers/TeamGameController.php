@@ -54,17 +54,20 @@ class TeamGameController extends Controller
                         $rules[$input] = $rule;
                     }
                 }
-
+                unset($rules['user_id']);
                 $this->validate($request, $rules, $this->teamGame->feedback());
             } else {
-                $this->validate($request, $this->teamGame->rules($id), $this->teamGame->feedback());
+                $rules = $this->teamGame->rules($id);
+                unset($rules['user_id']);
+                $this->validate($request, $rules, $this->teamGame->feedback());
             }
 
-            $teamGame->update($request->all());
+            $teamGame->update($request->except('user_id'));
         }
 
         return $teamGame;
     }
+
 
     public function destroy($id)
     {
