@@ -14,13 +14,13 @@ class TeamGame extends Model
         'abb',
         'user_id'
     ];
-    
-    public static function rules()
+
+    public function rules()
     {
         return [
             'name' => 'required|string|min:5|max:50|unique:team_games',
             'abb' => 'required|string|unique:team_games|max:3',
-            'user_id' => 'required|integer|exists:users,id|unique:team_games,user_id,' . auth()->id(),
+            'user_id' => 'required|integer|exists:users,id|unique:team_games'
         ];
     }
 
