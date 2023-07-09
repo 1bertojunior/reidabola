@@ -9,8 +9,6 @@ class AccessLevelMiddleware
     public function handle($request, Closure $next, $requiredLevel)
     {
         $user = $request->user();
-        // echo "requiredLevel: " . $requiredLevel;
-        // echo "\nuserAccessLevel: " . $user->accessLevel->id;
 
         $result =  response()->json(['error' => 'Unauthorized access.'], 403);
         

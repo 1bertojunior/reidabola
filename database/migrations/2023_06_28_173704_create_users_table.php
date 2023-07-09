@@ -15,7 +15,6 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            // $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
@@ -23,7 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('first_name')->nullable(false);
             $table->string('last_name')->nullable(false);
             $table->string('nick')->unique()->nullable(false);
-            $table->unsignedBigInteger('access_level_id')->default(3)->nullable();            
+            $table->unsignedBigInteger('access_level_id')->nullable();            
             $table->timestamps();
 
             $table->foreign('access_level_id')->references('id')->on('access_levels');

@@ -19,10 +19,13 @@ class CreateAdminAccessLevelAndUser extends Migration
      */
     public function up()
     {
-        // Criar o nível de acesso "Admin"
-        $accessLevel = new AccessLevel();
-        $accessLevel->name = 'Admin';
-        $accessLevel->save();
+        // Criar o nível de acesso "Admin e Usuário"
+        $accessLevelAdmin = new AccessLevel();
+        $accessLevelAdmin->name = 'Admin';
+        $accessLevelAdmin->save();
+        $accessLevelUser = new AccessLevel();
+        $accessLevelUser->name = "Usuário";
+        $accessLevelUser->save();
 
         // Criar o usuário com o nível de acesso "Admin"
         $user = new User();
@@ -31,7 +34,7 @@ class CreateAdminAccessLevelAndUser extends Migration
         $user->first_name = 'Admin';
         $user->last_name = 'Root';
         $user->nick = 'admin';
-        $user->access_level_id = $accessLevel->id;
+        $user->access_level_id = $accessLevelAdmin->id;
         $user->save();
     }
 

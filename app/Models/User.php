@@ -23,7 +23,7 @@ class User extends Authenticatable implements JWTSubject
         'nick',
         'email',
         'password',
-        'access_level'
+        'access_level_id'
     ];
 
     /**
@@ -74,6 +74,7 @@ class User extends Authenticatable implements JWTSubject
             'first_name' => 'required',
             'last_name' => 'required',
             'nick' => 'required|unique:users',
+            'access_level_id' => 'required|integer|min:1|exists:access_levels,id'
         ];
     }
 
@@ -90,6 +91,10 @@ class User extends Authenticatable implements JWTSubject
             'last_name.required' => 'O campo sobrenome é obrigatório.',
             'nick.required' => 'O campo nickname é obrigatório.',
             'nick.unique' => 'O nickname fornecido já está em uso.',
+            'access_level_id.required' => 'O campo nível de acesso é obrigatório.',
+            'access_level_id.integer' => 'O campo nível de acesso deve ser um valor válido.',
+            'access_level_id.min' => 'O campo nível de acesso deve ser um número positivo acima de 0.',
+            'access_level_id.exists' => 'O nível de acesso fornecido não existe.'
         ];
     }
 
