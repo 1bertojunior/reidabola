@@ -7,79 +7,63 @@ use Illuminate\Http\Request;
 
 class StadiumFootballController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public $stadium;
+
+    public function __construct(StadiumFootball $stadium){
+        $this->stadium = $stadium;
+    }
+    
     public function index()
     {
-        //
+        $stadiums = $this->stadium->with('city.state')->get();;
+        return response()->json($stadiums);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function show($id)
     {
-        //
+        $stadium = $this->stadium->with('city')->find($id);
+
+        if ($stadium === null) {
+            return response()->json(['error' => 'Estádio não encontrado.'], 404);
+        }
+
+        return response()->json($stadium);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, $this->stadium->rules(), $this->stadium->feedback());
+
+        $stadium = $this->stadium->create($request->all());
+
+        return response()->json($stadium, 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\StadiumFootball  $stadiumFootball
-     * @return \Illuminate\Http\Response
-     */
-    public function show(StadiumFootball $stadiumFootball)
+    public function update(Request $request, $id)
     {
-        //
+        $stadium = $this->stadium->find($id);
+
+        if ($stadium === null) {
+            return response()->json(['error' => 'Estádio não encontrado.'], 404);
+        }
+
+        $this->validate($request, $this->stadium->rules(), $this->stadium->feedback());
+
+        $stadium->update($request->all());
+
+        return response()->json($stadium);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\StadiumFootball  $stadiumFootball
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(StadiumFootball $stadiumFootball)
+    public function destroy($id)
     {
-        //
-    }
+        $stadium = $this->stadium->find($id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\StadiumFootball  $stadiumFootball
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, StadiumFootball $stadiumFootball)
-    {
-        //
-    }
+        if ($stadium === null) {
+            return response()->json(['error' => 'Estádio não encontrado.'], 404);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\StadiumFootball  $stadiumFootball
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(StadiumFootball $stadiumFootball)
-    {
-        //
+        $stadium->delete();
+
+        return response()->json(['message' => 'Estádio removido com sucesso.']);
     }
 }
