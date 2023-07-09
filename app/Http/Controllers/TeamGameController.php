@@ -76,9 +76,7 @@ class TeamGameController extends Controller
     {
 
         $result = $this->teamGame->find($id);
-
         $result = ($result === null) ? 0 : $result->delete();
-
         return $result ? ['msg' => "Removido com sucesso"] :  response()->json([ 'error' => "Nenhum dado encontrado"], 404); ;
     }
 }

@@ -38,10 +38,10 @@ Route::prefix('v1')->group(function () {
 
         // PRIVATES
         Route::middleware(['jwt.auth', 'access.level:1'])->group(function () {
-            // Rotas acessíveis apenas para usuários com nível de acesso 1 ou superior
+            // Rotas acessíveis apenas para usuários com nível de acesso 1
             Route::apiResource('accessLevel', 'App\Http\Controllers\AccessLevelController');
             Route::apiResource('state', 'App\Http\Controllers\StateController');
-            // Route::apiResource('city', 'App\Http\Controllers\CityController');
+            Route::apiResource('city', 'App\Http\Controllers\CityController');
         });
 
         // OTHERS
