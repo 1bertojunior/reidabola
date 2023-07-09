@@ -23,9 +23,10 @@ class CreateUsersTable extends Migration
             $table->string('first_name')->nullable(false);
             $table->string('last_name')->nullable(false);
             $table->string('nick')->unique()->nullable(false);
-            
-            
+            $table->unsignedBigInteger('access_level_id')->default(3)->nullable();            
             $table->timestamps();
+
+            $table->foreign('access_level_id')->references('id')->on('access_levels');
         });
         
     }
@@ -37,6 +38,10 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['access_level_id']);
+            $table->dropColumn('access_level_id');
+        });
         Schema::dropIfExists('users');
     }
 }

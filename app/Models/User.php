@@ -23,6 +23,7 @@ class User extends Authenticatable implements JWTSubject
         'nick',
         'email',
         'password',
+        'access_level'
     ];
 
     /**
@@ -90,6 +91,12 @@ class User extends Authenticatable implements JWTSubject
             'nick.required' => 'O campo nickname é obrigatório.',
             'nick.unique' => 'O nickname fornecido já está em uso.',
         ];
+    }
+
+    // Relação com o nível de acesso
+    public function accessLevel()
+    {
+        return $this->belongsTo(AccessLevel::class);
     }
 
     // public function teamGame(){

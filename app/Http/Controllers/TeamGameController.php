@@ -33,7 +33,7 @@ class TeamGameController extends Controller
 
     public function show($id)
     {
-        $result = $this->teamGame->with('user')->find($id);
+        $result = $this->teamGame->with('accessLevel')->find($id);
         if ($result === null) {
             $result = response()->json(['error' => "Nenhum dado encontrado."], 404);
         }

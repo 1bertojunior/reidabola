@@ -36,15 +36,24 @@ Route::prefix('v1')->group(function () {
         Route::post('me', 'App\Http\Controllers\AuthController@me');
         Route::post('refresh', 'App\Http\Controllers\AuthController@refresh');
 
+        // PRIVATES
+        Route::middleware(['jwt.auth', 'access.level:1'])->group(function () {
+            // Rotas acessíveis apenas para usuários com nível de acesso 1 ou superior
+            Route::apiResource('accessLevel', 'App\Http\Controllers\AccessLevelController');
+            Route::apiResource('state', 'App\Http\Controllers\StateController');
+            // Route::apiResource('city', 'App\Http\Controllers\CityController');
+        });
+
         // OTHERS
-        Route::apiResource('state', 'App\Http\Controllers\StateController');
         Route::apiResource('teamGame', 'App\Http\Controllers\TeamGameController');
-        // Route::apiResource('city', 'App\Http\Controllers\CityController')
 
 
     });
 
 });
+
+
+
 
 
 

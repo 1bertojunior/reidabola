@@ -21,8 +21,15 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = $this->user->all();
-        return response()->json($users, 200);
+        $user = $this->user->with('accessLevel')->find(auth()->user()->id);
+        $accessLevel = $user->accessLevel;
+
+        if ($accessLevel->level < 3) {
+            $users = $this->user->all();
+            return response()->json($users, 200);
+        }
+
+        return response()->json(['error' => 'Acesso não autorizado.'], 403);
     }
 
     /**
@@ -52,9 +59,13 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show($id)
     {
-        //
+        $result = $this->user->with('user')->find($id);
+        if ($result === null) {
+            $result = response()->json(['error' => "Nenhum dado encontrado."], 404);
+        }
+        return $result;
     }
 
     /**
