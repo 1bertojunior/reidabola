@@ -35,6 +35,13 @@ class CreateMatchGameLineupsTable extends Migration
      */
     public function down()
     {
+        Schema::table('match_game_lineups', function (Blueprint $table) {
+            $table->dropForeign(['team_game_edition_id']);
+            $table->dropForeign(['player_lineup_id']);
+            $table->dropForeign(['championship_round_id']);
+        });
+
         Schema::dropIfExists('match_game_lineups');
     }
+
 }

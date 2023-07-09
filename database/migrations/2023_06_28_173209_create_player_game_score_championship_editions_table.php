@@ -32,6 +32,13 @@ class CreatePlayerGameScoreChampionshipEditionsTable extends Migration
      */
     public function down()
     {
+        Schema::table('player_game_score_championship_editions', function (Blueprint $table) {
+            $table->dropForeign('fk_player_game_score');
+            $table->dropForeign('fk_championship_edition');
+        });
+
         Schema::dropIfExists('player_game_score_championship_editions');
     }
+
+
 }

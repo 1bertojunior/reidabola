@@ -36,6 +36,13 @@ class CreateMatchGoalStatsTable extends Migration
      */
     public function down()
     {
+        Schema::table('match_goal_stats', function (Blueprint $table) {
+            $table->dropForeign(['soccer_match_id']);
+            $table->dropForeign(['player_gol_id']);
+            $table->dropForeign(['player_assist_id']);
+        });
+
         Schema::dropIfExists('match_goal_stats');
     }
+
 }

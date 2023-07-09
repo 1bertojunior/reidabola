@@ -31,10 +31,12 @@ class CreatePlayerEditionsTable extends Migration
      */
     public function down()
     {
-        Schema::table('match_lineup', function (Blueprint $table) {
-            $table->dropForeign('match_lineup_player_edition_id_foreign');
+        Schema::table('player_editions', function (Blueprint $table) {
+            $table->dropForeign(['player_id']);
+            $table->dropForeign(['team_edition_id']);
         });
-        
+
         Schema::dropIfExists('player_editions');
     }
+
 }

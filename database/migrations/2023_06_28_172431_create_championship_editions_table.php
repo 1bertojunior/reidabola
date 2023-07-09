@@ -33,6 +33,11 @@ class CreateChampionshipEditionsTable extends Migration
      */
     public function down()
     {
+        Schema::table('championship_editions', function (Blueprint $table) {
+            $table->dropForeign(['championship_id']);
+        });
+
         Schema::dropIfExists('championship_editions');
     }
+
 }

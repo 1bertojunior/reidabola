@@ -37,6 +37,14 @@ class CreateSubstitutionsTable extends Migration
      */
     public function down()
     {
+        Schema::table('substitutions', function (Blueprint $table) {
+            $table->dropForeign(['soccer_match_id']);
+            $table->dropForeign(['team_edition_id']);
+            $table->dropForeign(['player_in_id']);
+            $table->dropForeign(['player_out_id']);
+        });
+
         Schema::dropIfExists('substitutions');
     }
+
 }

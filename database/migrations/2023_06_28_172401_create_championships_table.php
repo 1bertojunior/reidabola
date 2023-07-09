@@ -30,6 +30,11 @@ class CreateChampionshipsTable extends Migration
      */
     public function down()
     {
+        Schema::table('championships', function (Blueprint $table) {
+            $table->dropForeign(['city_id']);
+        });
+
         Schema::dropIfExists('championships');
     }
+
 }
