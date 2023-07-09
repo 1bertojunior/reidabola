@@ -19,13 +19,13 @@ class CreateMatchCardsStatsTable extends Migration
             $table->boolean('card_yellow')->default(false);
             $table->boolean('card_red')->default(false);
             $table->unsignedBigInteger('soccer_match_id')->nullable(false);
-            $table->unsignedBigInteger('player_commited_id')->nullable(false);
-            $table->unsignedBigInteger('player_suffered_id')->nullable(false);
+            $table->unsignedBigInteger('player_commit_id')->nullable(false);
+            $table->unsignedBigInteger('player_suffer_id')->nullable(false);
             $table->timestamps();
         
             $table->foreign('soccer_match_id')->references('id')->on('soccer_matches');
-            $table->foreign('player_commited_id')->references('id')->on('match_lineup');
-            $table->foreign('player_suffered_id')->references('id')->on('match_lineup');
+            $table->foreign('player_commit_id')->references('id')->on('match_lineup');
+            $table->foreign('player_suffer_id')->references('id')->on('match_lineup');
         });
         
     }
@@ -37,13 +37,13 @@ class CreateMatchCardsStatsTable extends Migration
      */
     public function down()
     {
-        Schema::table('match_goal_stats', function (Blueprint $table) {
+        Schema::table('match_cards_stats', function (Blueprint $table) {
             $table->dropForeign(['soccer_match_id']);
-            $table->dropForeign(['player_gol_id']);
-            $table->dropForeign(['player_assist_id']);
+            $table->dropForeign(['player_commit_id']);
+            $table->dropForeign(['player_suffer_id']);
         });
 
-        Schema::dropIfExists('match_goal_stats');
+        Schema::dropIfExists('match_cards_stats');
     }
 
 }
