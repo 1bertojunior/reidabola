@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\ChampionshipEdition;
 use App\Models\Championship;
-use Carbon\Carbon;
 
 class ChampionshipEditionSeeder extends Seeder
 {
@@ -16,13 +15,12 @@ class ChampionshipEditionSeeder extends Seeder
      */
     public function run()
     {
-        $championship = Championship::where('name', 'Campeonato de Belém do Piauí')->first();
+        $championship = Championship::where('name', 'Belenense')->first();
 
         if ($championship) {
             $edition = ChampionshipEdition::create([
-                'year' => Carbon::now()->year,
-                'start' => Carbon::create(null, 10, 1, 0, 0, 0),
-                'end' => Carbon::create(null, 12, 14, 0, 0, 0),
+                'start' => '2023-10-01 00:00:00', // Data e hora de início no formato Y-m-d H:i:s
+                'end' => '2023-12-14 00:00:00', // Data e hora de término no formato Y-m-d H:i:s
                 'championship_id' => $championship->id,
             ]);
 
