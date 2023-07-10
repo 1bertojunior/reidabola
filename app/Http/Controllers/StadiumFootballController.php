@@ -21,7 +21,7 @@ class StadiumFootballController extends Controller
 
     public function show($id)
     {
-        $stadium = $this->stadium->with('city')->find($id);
+        $stadium = $this->stadium->with('city.state')->find($id);
 
         if ($stadium === null) {
             return response()->json(['error' => 'Estádio não encontrado.'], 404);

@@ -3,84 +3,68 @@
 namespace App\Http\Controllers;
 
 use App\Models\Championship;
-use App\Http\Requests\StoreChampionshipRequest;
-use App\Http\Requests\UpdateChampionshipRequest;
+use Illuminate\Http\Request;
 
 class ChampionshipController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    protected $championship;
+
+    public function __construct(Championship $championship)
+    {
+        $this->championship = $championship;
+    }
+
     public function index()
     {
-        //
+        $championships = $this->championship->with('city')->get();
+        return response()->json($championships);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function show($id)
     {
-        //
+        $championship = $this->championship->with('city')->find($id);
+
+        if ($championship === null) {
+            return response()->json(['error' => 'Campeonato não encontrado.'], 404);
+        }
+
+        return response()->json($championship);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreChampionshipRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreChampionshipRequest $request)
+    public function store(Request $request)
     {
-        //
+        $this->validate($request, $this->championship->rules(), $this->championship->feedback());
+
+        $championship = $this->championship->create($request->all());
+
+        return response()->json($championship, 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Championship  $championship
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Championship $championship)
+    public function update(Request $request, $id)
     {
-        //
+        $championship = $this->championship->find($id);
+
+        if ($championship === null) {
+            return response()->json(['error' => 'Campeonato não encontrado.'], 404);
+        }
+
+        $this->validate($request, $this->championship->rules(), $this->championship->feedback());
+
+        $championship->update($request->all());
+
+        return response()->json($championship);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Championship  $championship
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Championship $championship)
+    public function destroy($id)
     {
-        //
-    }
+        $championship = $this->championship->find($id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateChampionshipRequest  $request
-     * @param  \App\Models\Championship  $championship
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateChampionshipRequest $request, Championship $championship)
-    {
-        //
-    }
+        if ($championship === null) {
+            return response()->json(['error' => 'Campeonato não encontrado.'], 404);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Championship  $championship
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Championship $championship)
-    {
-        //
+        $championship->delete();
+
+        return response()->json(['message' => 'Campeonato removido com sucesso.']);
     }
 }

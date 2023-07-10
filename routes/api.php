@@ -25,27 +25,28 @@ Route::get('/', function () {
 });
 
 Route::prefix('v1')->group(function () {
-    // Auth
+    // ATH ROUTES PUBLIC
     Route::post('login', 'App\Http\Controllers\AuthController@login');
     Route::post('register', 'App\Http\Controllers\AuthController@register');
 
     // PROTECTED
     Route::middleware('jwt.auth')->group(function(){
-        // Auth
+        // AUTH ROUTES PROTECTED
         Route::post('logout', 'App\Http\Controllers\AuthController@logout');
         Route::post('me', 'App\Http\Controllers\AuthController@me');
         Route::post('refresh', 'App\Http\Controllers\AuthController@refresh');
 
-        // PRIVATES
-        Route::middleware(['jwt.auth', 'access.level:1'])->group(function () {
+        // ROUTES ADMIN
+        Route::middleware(['access.level:1'])->group(function () {
             // Rotas acessíveis apenas para usuários com nível de acesso 1
             Route::apiResource('accessLevel', 'App\Http\Controllers\AccessLevelController');
             Route::apiResource('state', 'App\Http\Controllers\StateController');
             Route::apiResource('city', 'App\Http\Controllers\CityController');
             Route::apiResource('stadium', 'App\Http\Controllers\StadiumFootballController');
+            Route::apiResource('championship', 'App\Http\Controllers\ChampionshipController');
         });
 
-        // OTHERS
+        // ROUTER USER
         Route::apiResource('teamGame', 'App\Http\Controllers\TeamGameController');
 
 

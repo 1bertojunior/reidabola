@@ -30,35 +30,7 @@ class AuthController extends Controller
         // return JWT
         return response()->json( $result['msg'], $result['status'] );
     }
-
-    // public function register(Request $request)
-    // {
-    //     $data = $request->all();
-    //     $defaultUserAccessLevelId = AccessLevel::getAccessLevelIdByName('Usuário');
     
-    //     $accessLevelId = isset($data['access_level_id']) ? $data['access_level_id'] : $defaultUserAccessLevelId;
-    
-    //     $user = new User([
-    //         'first_name' => $data['first_name'],
-    //         'last_name' => $data['last_name'],
-    //         'nick' => $data['nick'],
-    //         'email' => $data['email'],
-    //         'password' => bcrypt($data['password']),
-    //         'access_level_id' => $accessLevelId
-    //     ]);
-
-    //     $rules = $user->rules();
-    //     $rules['access_level_id'] = 'sometimes|' . $rules['access_level_id'];
-
-    //     $request->validate($rules, $user->feedback());
-    //     $user->save();
-
-    //     return response()->json([
-    //         'msg' => 'User created successfully',
-    //         'user' => $user
-    //     ], 201);
-    // }
-
     public function register(Request $request)
     {
         $data = $request->all();
