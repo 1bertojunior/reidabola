@@ -36,13 +36,12 @@ class PlayerSeeder extends Seeder
             ['first_name' => 'Rafael', 'last_name' => 'Rodrigues', 'number' => 9],
             ['first_name' => 'Fernando', 'last_name' => 'Carvalho', 'number' => 10],
             ['first_name' => 'Eduardo', 'last_name' => 'Ferreira', 'number' => 11],
-            // Adicionar mais jogadores aqui...
         ];
 
-        $totalPlayers = 150; // Total de jogadores
+        $totalPlayers = 180; // Total de jogadores
         $playersCount = count($playersData);
 
-        for ($i = $playersCount + 1; $i <= $totalPlayers; $i++) {
+        for ($i = 15 + 1; $i <= $totalPlayers; $i++) {
             $firstName = $this->generateFirstName();
             $lastName = $this->generateLastName();
             $number = $this->generateRandomNumber();
@@ -68,7 +67,7 @@ class PlayerSeeder extends Seeder
      */
     private function generateFirstName()
     {
-        $firstNames = ['Alex', 'Bernardo', 'Caio', 'Diego', 'Eduardo', 'Fábio', 'Gabriel', 'Hugo', 'Ícaro', 'Jorge'];
+        $firstNames = ['Alex', 'Bernardo', 'Caio', 'Diego', 'Eduardo', 'Fábio', 'Gabriel', 'Hugo', 'Ícaro', 'Jorge','Alisson', 'Alberto', 'Tavares', 'Thales', 'Tales', 'Moisés', 'Carlos', 'Messi', 'Cristiano', 'Ronaldo'];
         return $firstNames[array_rand($firstNames)];
     }
 

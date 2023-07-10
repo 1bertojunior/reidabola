@@ -8,6 +8,13 @@ use Illuminate\Validation\ValidationException;
 
 class PlayerController extends Controller
 {
+    public function index()
+    {
+        $players = Player::all();
+
+        return response()->json($players);
+    }
+    
     public function store(Request $request)
     {
         try {
