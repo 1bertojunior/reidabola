@@ -15,7 +15,6 @@ class CreateChampionshipEditionsTable extends Migration
     {
         Schema::create('championship_editions', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable(false);
             $table->date('year')->nullable(false);
             $table->datetime('start')->nullable(false);
             $table->datetime('end')->nullable(false);
