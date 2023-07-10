@@ -44,6 +44,7 @@ Route::prefix('v1')->group(function () {
             Route::apiResource('city', 'App\Http\Controllers\CityController');
             Route::apiResource('stadium', 'App\Http\Controllers\StadiumFootballController');
             Route::apiResource('championship', 'App\Http\Controllers\ChampionshipController');
+            Route::apiResource('coach', 'App\Http\Controllers\CoachController');
         });
 
         // ROUTER USER

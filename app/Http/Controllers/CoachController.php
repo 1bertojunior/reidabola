@@ -3,84 +3,67 @@
 namespace App\Http\Controllers;
 
 use App\Models\Coach;
-use App\Http\Requests\StoreCoachRequest;
-use App\Http\Requests\UpdateCoachRequest;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class CoachController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    protected $coach;
+    
+    public function __construct(Coach $coach)
     {
-        //
+        $this->coach = $coach;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function store(Request $request)
     {
-        //
+        try {
+            $this->validate($request, $this->coach->rules(), $this->coach->feedback());
+            
+            $coach = $this->coach->create($request->all());
+            
+            return response()->json($coach, 201);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 400);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erro ao criar o técnico.'], 500);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreCoachRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreCoachRequest $request)
+    public function show($id)
     {
-        //
+        $coach = $this->coach->findOrFail($id);
+        
+        return response()->json($coach);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Coach  $coach
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Coach $coach)
+    public function update(Request $request, $id)
     {
-        //
+        try {
+            $coach = $this->coach->findOrFail($id);
+
+            $this->validate($request, $this->coach->rules(), $this->coach->feedback());
+
+            $coach->update($request->all());
+
+            return response()->json($coach);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 400);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erro ao atualizar o técnico.'], 500);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Coach  $coach
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Coach $coach)
+    public function destroy($id)
     {
-        //
-    }
+        try {
+            $coach = $this->coach->findOrFail($id);
+            
+            $coach->delete();
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateCoachRequest  $request
-     * @param  \App\Models\Coach  $coach
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateCoachRequest $request, Coach $coach)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Coach  $coach
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Coach $coach)
-    {
-        //
+            return response()->json(['message' => 'Técnico removido com sucesso.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erro ao remover o técnico.'], 500);
+        }
     }
 }
