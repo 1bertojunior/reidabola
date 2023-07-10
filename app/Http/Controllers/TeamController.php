@@ -2,85 +2,102 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use App\Models\Team;
-use App\Http\Requests\StoreTeamRequest;
-use App\Http\Requests\UpdateTeamRequest;
 
 class TeamController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    protected $team;
+
+    public function __construct(Team $team)
+    {
+        $this->team = $team;
+    }
+
     public function index()
     {
-        //
+        try {
+            $teams = $this->team->with('championship')->get();
+
+            return response()->json($teams);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erro ao obter as equipes.'], 500);
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function show($id)
     {
-        //
+        try {
+            $team = $this->team->with('championship')->findOrFail($id);
+
+            return response()->json($team);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Equipe não encontrada.'], 404);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreTeamRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreTeamRequest $request)
+    public function store(Request $request)
     {
-        //
+        try {
+            $this->validate($request, $this->team->rules(), $this->team->feedback());
+
+            $team = $this->team->create($request->all());
+
+            return response()->json($team, 201);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 400);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erro ao criar a equipe.'], 500);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Team  $team
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Team $team)
+    public function update(Request $request, $id)
     {
-        //
+        try {
+            $team = $this->team->with('championship')->find($id);
+
+            if ($team === null) {
+                return response()->json(['error' => 'Nenhum dado encontrado.'], 404);
+            } else {
+                if ($request->method() === 'PATCH') {
+                    $requestData = $request->all();
+
+                    $rules = [];
+                    foreach ($this->team->rules($id) as $input => $rule) {
+                        if (array_key_exists($input, $requestData)) {
+                            $rules[$input] = $rule;
+                        }
+                    }
+
+                    $this->validate($request, $rules, $this->team->feedback());
+                } else {
+                    $this->validate($request, $this->team->rules($id), $this->team->feedback());
+                }
+
+                $team->update($request->all());
+            }
+
+            return response()->json($team);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 400);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erro ao atualizar a equipe.'], 500);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Team  $team
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Team $team)
+    public function destroy($id)
     {
-        //
+        try {
+            $team = $this->team->findOrFail($id);
+            
+            $team->delete();
+
+            return response()->json(['message' => 'Equipe removida com sucesso.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erro ao remover a equipe.'], 500);
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateTeamRequest  $request
-     * @param  \App\Models\Team  $team
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateTeamRequest $request, Team $team)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Team  $team
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Team $team)
-    {
-        //
-    }
 }

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\StadiumFootball;
 use App\Models\StatusLineup;
+use App\Models\TeamGame;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -24,6 +25,8 @@ class DatabaseSeeder extends Seeder
         $this->call(CoachSeeder::class);
         $this->call(PositionPlayerSeeder::class);
         $this->call(PlayerSeeder::class);
+        $this->call(TeamSeeder::class);
+
         $this->call(StatusLineupSeeder::class);
 
     }
