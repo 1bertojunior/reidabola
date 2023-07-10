@@ -2,85 +2,83 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use App\Models\StatusLineup;
-use App\Http\Requests\StoreStatusLineupRequest;
-use App\Http\Requests\UpdateStatusLineupRequest;
 
 class StatusLineupController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    protected $statusLineup;
+
+    public function __construct(StatusLineup $statusLineup)
+    {
+        $this->statusLineup = $statusLineup;
+    }
+
     public function index()
     {
-        //
+        try {
+            $statusLineups = $this->statusLineup->all();
+
+            return response()->json($statusLineups);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erro ao obter os status do lineup.'], 500);
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function store(Request $request)
     {
-        //
+        try {
+            $this->validate($request, $this->statusLineup->rules(), $this->statusLineup->feedback());
+
+            $statusLineup = $this->statusLineup->create($request->all());
+
+            return response()->json($statusLineup, 201);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 400);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erro ao criar o status do lineup.'], 500);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreStatusLineupRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreStatusLineupRequest $request)
+    public function show($id)
     {
-        //
+        try {
+            $statusLineup = $this->statusLineup->findOrFail($id);
+
+            return response()->json($statusLineup);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Status do lineup não encontrado.'], 404);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\StatusLineup  $statusLineup
-     * @return \Illuminate\Http\Response
-     */
-    public function show(StatusLineup $statusLineup)
+    public function update(Request $request, $id)
     {
-        //
+        try {
+            $statusLineup = $this->statusLineup->findOrFail($id);
+
+            $this->validate($request, $statusLineup->rules($id), $statusLineup->feedback());
+
+            $statusLineup->update($request->all());
+
+            return response()->json($statusLineup);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 400);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erro ao atualizar o status do lineup.'], 500);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\StatusLineup  $statusLineup
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(StatusLineup $statusLineup)
+    public function destroy($id)
     {
-        //
-    }
+        try {
+            $statusLineup = $this->statusLineup->findOrFail($id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateStatusLineupRequest  $request
-     * @param  \App\Models\StatusLineup  $statusLineup
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateStatusLineupRequest $request, StatusLineup $statusLineup)
-    {
-        //
-    }
+            $statusLineup->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\StatusLineup  $statusLineup
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(StatusLineup $statusLineup)
-    {
-        //
+            return response()->json(['message' => 'Status do lineup removido com sucesso.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erro ao remover o status do lineup.'], 500);
+        }
     }
 }
