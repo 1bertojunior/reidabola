@@ -3,84 +3,61 @@
 namespace App\Http\Controllers;
 
 use App\Models\Player;
-use App\Http\Requests\StorePlayerRequest;
-use App\Http\Requests\UpdatePlayerRequest;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class PlayerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function store(Request $request)
     {
-        //
+        try {
+            $this->validate($request, Player::rules(), Player::feedback());
+            
+            $player = Player::create($request->all());
+            
+            return response()->json($player, 201);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 400);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erro ao criar o jogador.'], 500);
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function show($id)
     {
-        //
+        $player = Player::findOrFail($id);
+        
+        return response()->json($player);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StorePlayerRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StorePlayerRequest $request)
+    public function update(Request $request, $id)
     {
-        //
+        try {
+            $player = Player::findOrFail($id);
+
+            $this->validate($request, Player::rules(), Player::feedback());
+
+            $player->update($request->all());
+
+            return response()->json($player);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 400);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erro ao atualizar o jogador.'], 500);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Player  $player
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Player $player)
+    public function destroy($id)
     {
-        //
-    }
+        try {
+            $player = Player::findOrFail($id);
+            
+            $player->delete();
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Player  $player
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Player $player)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdatePlayerRequest  $request
-     * @param  \App\Models\Player  $player
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdatePlayerRequest $request, Player $player)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Player  $player
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Player $player)
-    {
-        //
+            return response()->json(['message' => 'Jogador removido com sucesso.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erro ao remover o jogador.'], 500);
+        }
     }
 }
+
