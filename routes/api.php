@@ -25,7 +25,7 @@ Route::get('/', function () {
 });
 
 Route::prefix('v1')->group(function () {
-    // ATH ROUTES PUBLIC
+    // AUTH ROUTES PUBLIC
     Route::post('login', 'App\Http\Controllers\AuthController@login');
     Route::post('register', 'App\Http\Controllers\AuthController@register');
 
@@ -35,6 +35,15 @@ Route::prefix('v1')->group(function () {
         Route::post('logout', 'App\Http\Controllers\AuthController@logout');
         Route::post('me', 'App\Http\Controllers\AuthController@me');
         Route::post('refresh', 'App\Http\Controllers\AuthController@refresh');
+
+        // ROUTER USER
+        Route::apiResource('teamGame', 'App\Http\Controllers\TeamGameController');
+
+
+
+        // INDEX AND SHOW USER
+        // Route::get('name', 'App\Http\Controllers\nameController@index');
+        // Route::get('name/{id}', 'App\Http\Controllers\nameController@show');
 
         // ROUTES ADMIN
         Route::middleware(['access.level:1'])->group(function () {
@@ -48,14 +57,16 @@ Route::prefix('v1')->group(function () {
             Route::apiResource('positionPlayer', 'App\Http\Controllers\PositionPlayerController');
             Route::apiResource('player', 'App\Http\Controllers\PlayerController');
             Route::apiResource('team', 'App\Http\Controllers\TeamController');
+            Route::apiResource('teamEdition', 'App\Http\Controllers\TeamEditionController');
+
+            // STORE, UPDATE AND DESTROY BY ADMIN ADMIN
+            // Route::post('name', 'App\Http\Controllers\nameController@store');
+            // Route::put('name/{id}', 'App\Http\Controllers\nameController@update');
+            // Route::delete('name/{id}', 'App\Http\Controllers\nameController@destroy');
             
             Route::apiResource('statusLineup', 'App\Http\Controllers\StatusLineupController');
 
         });
-
-        // ROUTER USER
-        Route::apiResource('teamGame', 'App\Http\Controllers\TeamGameController');
-
 
     });
 

@@ -2,85 +2,83 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use App\Models\TeamEdition;
-use App\Http\Requests\StoreTeamEditionRequest;
-use App\Http\Requests\UpdateTeamEditionRequest;
 
 class TeamEditionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    protected $teamEdition;
+
+    public function __construct(TeamEdition $teamEdition)
+    {
+        $this->teamEdition = $teamEdition;
+    }
+
     public function index()
     {
-        //
+        try {
+            $teamEditions = TeamEdition::with('team', 'championshipEdition.championship', 'coach')->get();
+
+            return response()->json($teamEditions, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erro ao buscar as edições de equipe.'], 500);
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function show($id)
     {
-        //
+        try {
+            $teamEdition = TeamEdition::with('team', 'championshipEdition.championship', 'coach')->findOrFail($id);
+
+            return response()->json($teamEdition, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Edição de equipe não encontrada.'], 404);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreTeamEditionRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreTeamEditionRequest $request)
+    public function store(Request $request)
     {
-        //
+        try {
+            $this->validate($request, $this->teamEdition->rules(), $this->teamEdition->feedback());
+
+            $teamEdition = $this->teamEdition->create($request->all());
+
+            return response()->json($teamEdition, 201);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 400);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error creating team edition.'], 500);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\TeamEdition  $teamEdition
-     * @return \Illuminate\Http\Response
-     */
-    public function show(TeamEdition $teamEdition)
+    public function update(Request $request, $id)
     {
-        //
+        try {
+            $teamEdition = $this->teamEdition->findOrFail($id);
+
+            $this->validate($request, $this->teamEdition->rules(), $this->teamEdition->feedback());
+
+            $teamEdition->update($request->all());
+
+            return response()->json($teamEdition);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 400);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error updating team edition.'], 500);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\TeamEdition  $teamEdition
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(TeamEdition $teamEdition)
+    public function destroy($id)
     {
-        //
-    }
+        try {
+            $teamEdition = $this->teamEdition->findOrFail($id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateTeamEditionRequest  $request
-     * @param  \App\Models\TeamEdition  $teamEdition
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateTeamEditionRequest $request, TeamEdition $teamEdition)
-    {
-        //
-    }
+            $teamEdition->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\TeamEdition  $teamEdition
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(TeamEdition $teamEdition)
-    {
-        //
+            return response()->json(['message' => 'Team edition removed successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error removing team edition.'], 500);
+        }
     }
 }
