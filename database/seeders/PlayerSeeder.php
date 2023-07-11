@@ -38,10 +38,10 @@ class PlayerSeeder extends Seeder
             ['first_name' => 'Eduardo', 'last_name' => 'Ferreira', 'number' => 11],
         ];
 
-        $totalPlayers = 180; // Total de jogadores
+        $totalPlayers = 500; // Total de jogadores
         $playersCount = count($playersData);
 
-        for ($i = 15 + 1; $i <= $totalPlayers; $i++) {
+        for ($i = 21 + 1; $i <= $totalPlayers; $i++) {
             $firstName = $this->generateFirstName();
             $lastName = $this->generateLastName();
             $number = $this->generateRandomNumber();
@@ -67,7 +67,23 @@ class PlayerSeeder extends Seeder
      */
     private function generateFirstName()
     {
-        $firstNames = ['Alex', 'Bernardo', 'Caio', 'Diego', 'Eduardo', 'Fábio', 'Gabriel', 'Hugo', 'Ícaro', 'Jorge','Alisson', 'Alberto', 'Tavares', 'Thales', 'Tales', 'Moisés', 'Carlos', 'Messi', 'Cristiano', 'Ronaldo'];
+        $firstNames = [
+            'Alex', 'Bernardo', 'Caio', 'Diego', 'Eduardo', 'Fábio', 'Gabriel', 'Hugo', 'Ícaro', 'Jorge',
+            'Alisson', 'Alberto', 'Tavares', 'Thales', 'Tales', 'Moisés', 'Carlos', 'Messi', 'Cristiano',
+            'Ronaldo', 'Fernando', 'Gustavo', 'Henrique', 'Igor', 'Julio', 'Kevin', 'Lucas', 'Marcelo', 'Nelson',
+            'Otávio', 'Paulo', 'Rafael', 'Samuel', 'Thiago', 'Ulisses', 'Valter', 'William', 'Xavier', 'Yago', 'Zélio',
+            'André', 'Bruno', 'Carlos', 'Daniel', 'Eduardo', 'Felipe', 'Gustavo', 'Hugo', 'Igor', 'João',
+            'Leonardo', 'Marcelo', 'Nelson', 'Otávio', 'Pedro', 'Rafael', 'Samuel', 'Thiago', 'Ulisses', 'Vitor',
+            'Alexandre', 'Bernardo', 'César', 'Diego', 'Erick', 'Fernando', 'Gabriel', 'Henrique', 'Ivan', 'Jorge',
+            'Lucas', 'Márcio', 'Nathan', 'Orlando', 'Paulo', 'Ricardo', 'Sérgio', 'Tiago', 'Vinicius', 'Wagner',
+            'Aiden', 'Beckett', 'Carter', 'Declan', 'Ezra', 'Finn', 'Gideon', 'Hudson', 'Ian', 'Jaxon',
+            'Kai', 'Landon', 'Maxwell', 'Nolan', 'Oscar', 'Paxton', 'Quincy', 'Ryder', 'Sawyer', 'Tristan',
+            'Victor', 'Wesley', 'Xander', 'Yahir', 'Zane', 'Asher', 'Bryson', 'Caden', 'Dexter', 'Elias',
+            'Fletcher', 'Grayson', 'Holden', 'Isaiah', 'Jasper', 'Knox', 'Liam', 'Maddox', 'Nathaniel', 'Orion'
+        ];
+
+        $firstNames = array_unique($firstNames);
+        
         return $firstNames[array_rand($firstNames)];
     }
 
@@ -77,8 +93,15 @@ class PlayerSeeder extends Seeder
      * @return string
      */
     private function generateLastName()
-    {
-        $lastNames = ['Silva', 'Santos', 'Fernandes', 'Oliveira', 'Costa', 'Ribeiro', 'Pereira', 'Almeida', 'Rodrigues', 'Carvalho'];
+    {        
+        $lastNames = [
+            'Silva', 'Santos', 'Fernandes', 'Oliveira', 'Costa', 'Ribeiro', 'Pereira', 'Almeida', 'Rodrigues', 'Carvalho',
+            'Gomes', 'Martins', 'Ramos', 'Alves', 'Lima', 'Araújo', 'Cruz', 'Mendes', 'Nunes', 'Sousa',
+            'Castro', 'Ferreira', 'Monteiro', 'Melo', 'Cardoso', 'Teixeira', 'Correia', 'Cavalcanti', 'Nascimento', 'Coelho',
+            'Moraes', 'Andrade', 'Freitas', 'Barbosa', 'Pinto', 'Tavares', 'Macedo', 'Siqueira', 'Campos', 'Borges'
+        ];
+        
+        $lastNames = array_unique($lastNames);
         return $lastNames[array_rand($lastNames)];
     }
 

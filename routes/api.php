@@ -58,13 +58,14 @@ Route::prefix('v1')->group(function () {
             Route::apiResource('player', 'App\Http\Controllers\PlayerController');
             Route::apiResource('team', 'App\Http\Controllers\TeamController');
             Route::apiResource('teamEdition', 'App\Http\Controllers\TeamEditionController');
+            Route::apiResource('playerEdition', 'App\Http\Controllers\PlayerEditionController');
 
+
+            Route::apiResource('statusLineup', 'App\Http\Controllers\StatusLineupController');
             // STORE, UPDATE AND DESTROY BY ADMIN ADMIN
             // Route::post('name', 'App\Http\Controllers\nameController@store');
             // Route::put('name/{id}', 'App\Http\Controllers\nameController@update');
             // Route::delete('name/{id}', 'App\Http\Controllers\nameController@destroy');
-            
-            Route::apiResource('statusLineup', 'App\Http\Controllers\StatusLineupController');
 
         });
 

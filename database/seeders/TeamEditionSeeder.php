@@ -52,6 +52,8 @@ class TeamEditionSeeder extends Seeder
                         'championship_edition_id' => $championshipId,
                         'coach_id' => $coach->id
                     ]);
+
+                    // $this->command->warn($teamEdition);
                 }
 
             }else{
