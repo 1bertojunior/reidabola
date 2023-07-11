@@ -29,7 +29,7 @@ class PlayerEditionController extends Controller
     public function show($id)
     {
         try {
-            $playerEdition = PlayerEdition::with('player', 'teamEdition')->findOrFail($id);
+            $playerEdition = PlayerEdition::with('player.position', 'teamEdition.team')->findOrFail($id);
 
             return response()->json($playerEdition, 200);
         } catch (\Exception $e) {

@@ -15,7 +15,7 @@ class CreateChampionshipRoundsTable extends Migration
     {
         Schema::create('championship_rounds', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 3)->nullable(false);
+            $table->string('name', 25)->nullable(false);
             $table->integer('round')->nullable(false);
             $table->timestamps();
         });
