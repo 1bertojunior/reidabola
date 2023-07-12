@@ -44,6 +44,8 @@ Route::prefix('v1')->group(function () {
         // INDEX AND SHOW USER
         // Route::get('name', 'App\Http\Controllers\nameController@index');
         // Route::get('name/{id}', 'App\Http\Controllers\nameController@show');
+        Route::get('soccerMatch', 'App\Http\Controllers\SoccerMatchController@index');
+        Route::get('soccerMatch/{id}', 'App\Http\Controllers\SoccerMatchController@show');
 
         // ROUTES ADMIN
         Route::middleware(['access.level:1'])->group(function () {

@@ -3,84 +3,106 @@
 namespace App\Http\Controllers;
 
 use App\Models\MatchLineup;
-use App\Http\Requests\StoreMatchLineupRequest;
-use App\Http\Requests\UpdateMatchLineupRequest;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class MatchLineupController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    private $matchLineup;
+
+    public function __construct(MatchLineup $matchLineup)
+    {
+        $this->matchLineup = $matchLineup;
+    }
+
     public function index()
     {
-        //
+        try {
+            $lineups = $this->matchLineup->with(['playerEdition.player', 'soccerMatch', 'statusLineup'])->get();
+            return $lineups;
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to retrieve match lineups'], 500);
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function show($id)
     {
-        //
+        try {
+            $lineup = $this->matchLineup->with(['playerEdition.player', 'soccerMatch', 'statusLineup'])->find($id);
+
+            if ($lineup === null) {
+                return response()->json(['error' => 'Match lineup not found'], 404);
+            }
+
+            return $lineup;
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to retrieve match lineup'], 500);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreMatchLineupRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreMatchLineupRequest $request)
+    public function store(Request $request)
     {
-        //
+        try {
+            $data = $request->all();
+            $lineup = $this->matchLineup->create($data);
+            return response()->json([
+                'msg' => 'Match lineup created successfully',
+                'lineup' => $lineup
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to create match lineup'], 500);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\MatchLineup  $matchLineup
-     * @return \Illuminate\Http\Response
-     */
-    public function show(MatchLineup $matchLineup)
+    public function update(Request $request, $id)
     {
-        //
+        try {
+            $lineup = $this->matchLineup->find($id);
+
+            if ($lineup === null) {
+                return response()->json(['error' => 'Match lineup not found'], 404);
+            }
+
+            if ($request->method() === "PATCH") {
+                $requestData = $request->all();
+
+                $rules = array();
+                foreach ($lineup->rules() as $input => $rule) {
+                    if (array_key_exists($input, $requestData)) {
+                        $rules[$input] = $rule;
+                    }
+                }
+
+                $request->validate($rules, $lineup->feedback());
+            } else {
+                $request->validate($lineup->rules(), $lineup->feedback());
+            }
+
+            $lineup->update($request->all());
+
+            return response()->json([
+                'msg' => 'Match lineup updated successfully',
+                'lineup' => $lineup
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to update match lineup'], 500);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\MatchLineup  $matchLineup
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(MatchLineup $matchLineup)
+    public function destroy($id)
     {
-        //
-    }
+        try {
+            $lineup = $this->matchLineup->find($id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateMatchLineupRequest  $request
-     * @param  \App\Models\MatchLineup  $matchLineup
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateMatchLineupRequest $request, MatchLineup $matchLineup)
-    {
-        //
-    }
+            if ($lineup === null) {
+                return response()->json(['error' => 'Match lineup not found'], 404);
+            }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\MatchLineup  $matchLineup
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(MatchLineup $matchLineup)
-    {
-        //
+            $lineup->delete();
+
+            return response()->json(['msg' => 'Match lineup deleted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to delete match lineup'], 500);
+        }
     }
 }
