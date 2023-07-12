@@ -60,6 +60,9 @@ Route::prefix('v1')->group(function () {
             Route::apiResource('teamEdition', 'App\Http\Controllers\TeamEditionController');
             Route::apiResource('playerEdition', 'App\Http\Controllers\PlayerEditionController');
             Route::apiResource('statusLineup', 'App\Http\Controllers\StatusLineupController');
+            Route::apiResource('championshipRound', 'App\Http\Controllers\ChampionshipRoundController');
+            Route::apiResource('soccerMatch', 'App\Http\Controllers\SoccerMatchController');
+
 
             
 

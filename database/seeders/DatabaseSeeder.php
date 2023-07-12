@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ChampionshipRound;
 use App\Models\StadiumFootball;
 use App\Models\StatusLineup;
 use App\Models\TeamGame;
@@ -29,8 +30,11 @@ class DatabaseSeeder extends Seeder
         $this->call(TeamEditionSeeder::class);
         $this->call(PlayerEditionSeeder::class);
         $this->call(StatusLineupSeeder::class);
+        $this->call(ChampionshipRoundSeeder::class);
+        $this->call(SoccerMatchSeeder::class);
 
-        
+
+
 
     }
 }

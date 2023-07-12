@@ -15,6 +15,7 @@ class CreateSoccerMatchesTable extends Migration
     {
         Schema::create('soccer_matches', function (Blueprint $table) {
             $table->id();
+            $table->dateTime('date_time')->nullable(false);
             $table->unsignedBigInteger('team1_edition_id')->nullable(false);
             $table->unsignedBigInteger('team2_edition_id')->nullable(false);
             $table->unsignedBigInteger('championship_edition_id')->nullable(false);
