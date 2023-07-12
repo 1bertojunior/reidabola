@@ -53,30 +53,11 @@ class MatchLineupSeeder extends Seeder
                 $team2_players_editions = PlayerEdition::where('team_edition_id', $team2_edition_id)->get();
         }
 
-
-        foreach ($team1_players_editions as $player){
-            $this->command->info($player);
-        }
-
-        // $team1_players = $this->getPlayersByTeamEdition($team1_players_editions);
-        // $team2_players = $this->getPlayersByTeamEdition($team2_players_editions);
-
-        // $team1_players_selected = $this->selectPlayers($team1_players);
-        // $team2_players_selected = $this->selectPlayers($team2_players);
-
-        // foreach ($team1_players_editions as $player){
-        //     $this->command->info($player);
-        // }
-
-        // foreach ($team1_players_editions as $player){
-        //     $this->command->info($player);
-        // }
-
-        // foreach ($team1_players_selected as $player){
-        //     $this->command->info($player);
-        // }
-
-
+        $team1_players_edition_id_selected = $this->selectPlayers($team1_players_editions);
+        $team2_players_edition_id_selected = $this->selectPlayers($team2_players_editions);
+        
+        $tem1_status_lineup = $this->createMatchLineups($team1_players_edition_id_selected, 1, 1);
+        $tem2_status_lineup = $this->createMatchLineups($team2_players_edition_id_selected, 1, 1);
     }
 
 
@@ -118,24 +99,39 @@ class MatchLineupSeeder extends Seeder
 
         $selectedPlayers = [];
 
-        foreach ($players as $player) {
+        foreach ($players as $playerEdition) {
+            $player = $this->getPlayerById($playerEdition->player_id);
             $positionId = $player[0]->position_id;
 
             if ($positionCounts[$positionId] < $this->getLimitForPosition($positionId)) {
-                $selectedPlayers[] = $player;
-                
+                $selectedPlayers[] = $playerEdition->id;
                 // $this->command->info( $player[0]->id );
                 
                 $positionCounts[$positionId]++;
 
-                if (count($selectedPlayers) === 11) {
-                    break;
-                }
+                if (count($selectedPlayers) === 11) break;
             }
         }
 
         return $selectedPlayers;
     }
+
+    public function createMatchLineups($playerEditionIds, $soccerMatchId, $statusLineupId){
+        $matchLineups = [];
+        
+        foreach ($playerEditionIds as $playerEditionId) {
+            $matchLineup = MatchLineup::create([
+                'player_edition_id' => $playerEditionId,
+                'soccer_match_id' => $soccerMatchId,
+                'status_lineup_id' => $statusLineupId
+            ]);
+            
+            $matchLineups[] = $matchLineup;
+        }
+        
+        return $matchLineups;
+    }
+
 
 
 }
