@@ -80,6 +80,8 @@ Route::prefix('v1')->group(function () {
         Route::post('teamGameEdition', 'App\Http\Controllers\TeamGameEditionController@store');
         Route::post('teamGameEdition/{id}', 'App\Http\Controllers\TeamGameEditionController@update');
 
+        Route::apiResource('matchGameLineup', 'App\Http\Controllers\MatchGameLineupController');
+
         // ROUTES ADMIN
         Route::middleware(['access.level:1'])->group(function () {
             // Rotas acessíveis apenas para usuários com nível de acesso 1
@@ -150,7 +152,7 @@ Route::prefix('v1')->group(function () {
             Route::delete('teamGame/{id}', 'App\Http\Controllers\TeamGameController@destroy');
 
             Route::delete('teamGameEdition/{id}', 'App\Http\Controllers\TeamGameEditionController@destroy');
-            
+
         });
 
     });

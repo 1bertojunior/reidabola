@@ -3,84 +3,91 @@
 namespace App\Http\Controllers;
 
 use App\Models\MatchGameLineup;
-use App\Http\Requests\StoreMatchGameLineupRequest;
-use App\Http\Requests\UpdateMatchGameLineupRequest;
+use Illuminate\Http\Request;
 
 class MatchGameLineupController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    private $matchGameLineup;
+
+    public function __construct(MatchGameLineup $matchGameLineup)
+    {
+        $this->matchGameLineup = $matchGameLineup;
+    }
+
     public function index()
     {
-        //
+        try {
+            $matchGameLineups = $this->matchGameLineup->with(['teamGameEdition', 'playerLineup', 'championshipRound'])->get();
+            return $matchGameLineups;
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to retrieve match game lineups'], 500);
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function show($id)
     {
-        //
+        try {
+            $matchGameLineup = $this->matchGameLineup->with(['teamGameEdition', 'playerLineup', 'championshipRound'])->find($id);
+
+            if ($matchGameLineup === null) {
+                return response()->json(['error' => 'Match game lineup not found'], 404);
+            }
+
+            return $matchGameLineup;
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to retrieve match game lineup'], 500);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreMatchGameLineupRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreMatchGameLineupRequest $request)
+    public function store(Request $request)
     {
-        //
+        try {
+            $data = $request->all();
+            $matchGameLineup = $this->matchGameLineup->create($data);
+            return response()->json([
+                'msg' => 'Match game lineup created successfully',
+                'matchGameLineup' => $matchGameLineup
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to create match game lineup'], 500);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\MatchGameLineup  $matchGameLineup
-     * @return \Illuminate\Http\Response
-     */
-    public function show(MatchGameLineup $matchGameLineup)
+    public function update(Request $request, $id)
     {
-        //
+        try {
+            $matchGameLineup = $this->matchGameLineup->find($id);
+
+            if ($matchGameLineup === null) {
+                return response()->json(['error' => 'Match game lineup not found'], 404);
+            }
+
+            $request->validate($this->matchGameLineup->rules(), $this->matchGameLineup->feedback());
+            $matchGameLineup->update($request->all());
+
+            return response()->json([
+                'msg' => 'Match game lineup updated successfully',
+                'matchGameLineup' => $matchGameLineup
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to update match game lineup'], 500);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\MatchGameLineup  $matchGameLineup
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(MatchGameLineup $matchGameLineup)
+    public function destroy($id)
     {
-        //
-    }
+        try {
+            $matchGameLineup = $this->matchGameLineup->find($id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateMatchGameLineupRequest  $request
-     * @param  \App\Models\MatchGameLineup  $matchGameLineup
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateMatchGameLineupRequest $request, MatchGameLineup $matchGameLineup)
-    {
-        //
-    }
+            if ($matchGameLineup === null) {
+                return response()->json(['error' => 'Match game lineup not found'], 404);
+            }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\MatchGameLineup  $matchGameLineup
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(MatchGameLineup $matchGameLineup)
-    {
-        //
+            $matchGameLineup->delete();
+
+            return response()->json(['msg' => 'Match game lineup deleted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to delete match game lineup'], 500);
+        }
     }
 }
