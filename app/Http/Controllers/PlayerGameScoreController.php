@@ -3,84 +3,100 @@
 namespace App\Http\Controllers;
 
 use App\Models\PlayerGameScore;
-use App\Http\Requests\StorePlayerGameScoreRequest;
-use App\Http\Requests\UpdatePlayerGameScoreRequest;
+use Illuminate\Http\Request;
 
 class PlayerGameScoreController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    private $playerGameScore;
+
+    public function __construct(PlayerGameScore $playerGameScore)
+    {
+        $this->playerGameScore = $playerGameScore;
+    }
+
     public function index()
     {
-        //
+        try {
+            $playerGameScores = $this->playerGameScore->all();
+            return $playerGameScores;
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to retrieve player game scores'], 500);
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function show($id)
     {
-        //
+        try {
+            $playerGameScore = $this->playerGameScore->find($id);
+
+            if ($playerGameScore === null) {
+                return response()->json(['error' => 'Player game score not found'], 404);
+            }
+
+            return $playerGameScore;
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to retrieve player game score'], 500);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StorePlayerGameScoreRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StorePlayerGameScoreRequest $request)
+    public function store(Request $request)
     {
-        //
+        try {
+            $data = $request->all();
+
+            $request->validate($this->playerGameScore->rules(), $this->playerGameScore->feedback());
+
+            $playerGameScore = new PlayerGameScore([
+                'name' => $data['name']
+            ]);
+
+            $playerGameScore->save();
+
+            return response()->json([
+                'msg' => 'Player game score created successfully',
+                'player_game_score' => $playerGameScore
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to create player game score'], 500);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\PlayerGameScore  $playerGameScore
-     * @return \Illuminate\Http\Response
-     */
-    public function show(PlayerGameScore $playerGameScore)
+    public function update(Request $request, $id)
     {
-        //
+        try {
+            $playerGameScore = $this->playerGameScore->find($id);
+
+            if ($playerGameScore === null) {
+                return response()->json(['error' => 'Player game score not found'], 404);
+            }
+
+            $request->validate($this->playerGameScore->rules(), $this->playerGameScore->feedback());
+
+            $playerGameScore->update($request->all());
+
+            return response()->json([
+                'msg' => 'Player game score updated successfully',
+                'player_game_score' => $playerGameScore
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to update player game score'], 500);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\PlayerGameScore  $playerGameScore
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(PlayerGameScore $playerGameScore)
+    public function destroy($id)
     {
-        //
-    }
+        try {
+            $playerGameScore = $this->playerGameScore->find($id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdatePlayerGameScoreRequest  $request
-     * @param  \App\Models\PlayerGameScore  $playerGameScore
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdatePlayerGameScoreRequest $request, PlayerGameScore $playerGameScore)
-    {
-        //
-    }
+            if ($playerGameScore === null) {
+                return response()->json(['error' => 'Player game score not found'], 404);
+            }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\PlayerGameScore  $playerGameScore
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(PlayerGameScore $playerGameScore)
-    {
-        //
+            $playerGameScore->delete();
+
+            return response()->json(['msg' => 'Player game score deleted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to delete player game score'], 500);
+        }
     }
 }
