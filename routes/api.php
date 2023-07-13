@@ -90,8 +90,8 @@ Route::prefix('v1')->group(function () {
         Route::get('matchLineup', 'App\Http\Controllers\MatchLineupController@index');
         Route::get('matchLineup/{id}', 'App\Http\Controllers\MatchLineupController@show');        
 
-        // Route::get('name', 'App\Http\Controllers\nameController@index');
-        // Route::get('name/{id}', 'App\Http\Controllers\nameController@show');
+        Route::get('substitution', 'App\Http\Controllers\SubstitutionController@index');
+        Route::get('substitution/{id}', 'App\Http\Controllers\SubstitutionController@show');        
 
         // ROUTES ADMIN
         Route::middleware(['access.level:1'])->group(function () {
@@ -169,6 +169,10 @@ Route::prefix('v1')->group(function () {
             Route::post('matchLineup', 'App\Http\Controllers\MatchLineupController@store');
             Route::put('matchLineup/{id}', 'App\Http\Controllers\MatchLineupController@update');
             Route::delete('matchLineup/{id}', 'App\Http\Controllers\MatchLineupController@destroy');
+
+            Route::post('substitution', 'App\Http\Controllers\SubstitutionController@store');
+            Route::put('substitution/{id}', 'App\Http\Controllers\SubstitutionController@update');
+            Route::delete('substitution/{id}', 'App\Http\Controllers\SubstitutionController@destroy');
             
 
             // STORE, UPDATE AND DESTROY BY ADMIN ADMIN

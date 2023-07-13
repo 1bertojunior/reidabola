@@ -3,84 +3,115 @@
 namespace App\Http\Controllers;
 
 use App\Models\Substitution;
-use App\Http\Requests\StoreSubstitutionRequest;
-use App\Http\Requests\UpdateSubstitutionRequest;
+use Illuminate\Http\Request;
 
 class SubstitutionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    private $substitution;
+
+    public function __construct(Substitution $substitution)
+    {
+        $this->substitution = $substitution;
+    }
+
     public function index()
     {
-        //
+        try {
+            $substitutions = $this->substitution->all();
+            return $substitutions;
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to retrieve substitutions'], 500);
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function show($id)
     {
-        //
+        try {
+            $substitution = $this->substitution->find($id);
+
+            if ($substitution === null) {
+                return response()->json(['error' => 'Substitution not found'], 404);
+            }
+
+            return $substitution;
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to retrieve substitution'], 500);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreSubstitutionRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreSubstitutionRequest $request)
+    public function store(Request $request)
     {
-        //
+        try {
+            $data = $request->all();
+
+            $substitution = new Substitution([
+                'minute' => isset($data['minute']) ? $data['minute'] : null,
+                'soccer_match_id' => isset($data['soccer_match_id']) ? $data['soccer_match_id'] : null,
+                'team_edition_id' => isset($data['team_edition_id']) ? $data['team_edition_id'] : null,
+                'player_in_id' => isset($data['player_in_id']) ? $data['player_in_id'] : null,
+                'player_out_id' => isset($data['player_out_id']) ? $data['player_out_id'] : null,
+            ]);
+
+            $substitution->save();
+
+            return response()->json([
+                'msg' => 'Substitution created successfully',
+                'substitution' => $substitution
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to create substitution'], 500);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Substitution  $substitution
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Substitution $substitution)
+    public function update(Request $request, $id)
     {
-        //
+        try {
+            $substitution = $this->substitution->find($id);
+
+            if ($substitution === null) {
+                return response()->json(['error' => 'Substitution not found'], 404);
+            }
+
+            if ($request->method() === "PATCH") {
+                $requestData = $request->all();
+
+                $rules = array();
+                foreach ($substitution->rules() as $input => $rule) {
+                    if (array_key_exists($input, $requestData)) {
+                        $rules[$input] = $rule;
+                    }
+                }
+
+                $request->validate($rules, $substitution->feedback());
+            } else {
+                $request->validate($substitution->rules(), $substitution->feedback());
+            }
+
+            $substitution->update($request->all());
+
+            return response()->json([
+                'msg' => 'Substitution updated successfully',
+                'substitution' => $substitution
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to update substitution'], 500);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Substitution  $substitution
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Substitution $substitution)
+    public function destroy($id)
     {
-        //
-    }
+        try {
+            $substitution = $this->substitution->find($id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateSubstitutionRequest  $request
-     * @param  \App\Models\Substitution  $substitution
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateSubstitutionRequest $request, Substitution $substitution)
-    {
-        //
-    }
+            if ($substitution === null) {
+                return response()->json(['error' => 'Substitution not found'], 404);
+            }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Substitution  $substitution
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Substitution $substitution)
-    {
-        //
+            $substitution->delete();
+
+            return response()->json(['msg' => 'Substitution deleted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to delete substitution'], 500);
+        }
     }
 }
