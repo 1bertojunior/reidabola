@@ -87,6 +87,9 @@ Route::prefix('v1')->group(function () {
         Route::get('soccerMatch', 'App\Http\Controllers\SoccerMatchController@index');
         Route::get('soccerMatch/{id}', 'App\Http\Controllers\SoccerMatchController@show');        
 
+        Route::get('matchLineup', 'App\Http\Controllers\MatchLineupController@index');
+        Route::get('matchLineup/{id}', 'App\Http\Controllers\MatchLineupController@show');        
+
         // Route::get('name', 'App\Http\Controllers\nameController@index');
         // Route::get('name/{id}', 'App\Http\Controllers\nameController@show');
 
@@ -107,7 +110,6 @@ Route::prefix('v1')->group(function () {
             Route::post('city', 'App\Http\Controllers\CityController@store');
             Route::put('city/{id}', 'App\Http\Controllers\CityController@update');
             Route::delete('city/{id}', 'App\Http\Controllers\CityController@destroy');
-
 
             // Route::apiResource('stadium', 'App\Http\Controllers\StadiumFootballController');
             Route::post('stadium', 'App\Http\Controllers\StadiumFootballController@store');
@@ -163,6 +165,10 @@ Route::prefix('v1')->group(function () {
             Route::post('soccerMatch', 'App\Http\Controllers\SoccerMatchController@store');
             Route::put('soccerMatch/{id}', 'App\Http\Controllers\SoccerMatchController@update');
             Route::delete('soccerMatch/{id}', 'App\Http\Controllers\SoccerMatchController@destroy');
+
+            Route::post('matchLineup', 'App\Http\Controllers\MatchLineupController@store');
+            Route::put('matchLineup/{id}', 'App\Http\Controllers\MatchLineupController@update');
+            Route::delete('matchLineup/{id}', 'App\Http\Controllers\MatchLineupController@destroy');
             
 
             // STORE, UPDATE AND DESTROY BY ADMIN ADMIN
