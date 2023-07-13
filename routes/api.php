@@ -3,21 +3,6 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
-#Route::middleware('auth:api')->get('/user', function (Request $request) {
-    #return $request->user();
-#});
-
 Route::get('/', function () {
     return [
         "success" => true
@@ -36,17 +21,9 @@ Route::prefix('v1')->group(function () {
         Route::post('me', 'App\Http\Controllers\AuthController@me');
         Route::post('refresh', 'App\Http\Controllers\AuthController@refresh');
 
-        // ROUTER USER
-        Route::apiResource('teamGame', 'App\Http\Controllers\TeamGameController');
-
-
-
         // INDEX AND SHOW USER
         Route::get('accessLevel', 'App\Http\Controllers\AccessLevelController@index');
         Route::get('accessLevel/{id}', 'App\Http\Controllers\AccessLevelController@show');
-
-        // Route::get('name', 'App\Http\Controllers\nameController@index');
-        // Route::get('name/{id}', 'App\Http\Controllers\nameController@show');
 
         Route::get('state', 'App\Http\Controllers\StateController@index');
         Route::get('state/{id}', 'App\Http\Controllers\StateController@show');
@@ -93,93 +70,87 @@ Route::prefix('v1')->group(function () {
         Route::get('substitution', 'App\Http\Controllers\SubstitutionController@index');
         Route::get('substitution/{id}', 'App\Http\Controllers\SubstitutionController@show');        
 
+        Route::get('teamGame', 'App\Http\Controllers\TeamGameController@index');
+        Route::get('teamGame/{id}', 'App\Http\Controllers\TeamGameController@show');        
+        Route::post('teamGame', 'App\Http\Controllers\TeamGameController@store');
+        Route::post('teamGame/{id}', 'App\Http\Controllers\TeamGameController@update');
+
+        Route::get('teamGameEdition', 'App\Http\Controllers\TeamGameEditionController@index');
+        Route::get('teamGameEdition/{id}', 'App\Http\Controllers\TeamGameEditionController@show');        
+        Route::post('teamGameEdition', 'App\Http\Controllers\TeamGameEditionController@store');
+        Route::post('teamGameEdition/{id}', 'App\Http\Controllers\TeamGameEditionController@update');
+
         // ROUTES ADMIN
         Route::middleware(['access.level:1'])->group(function () {
             // Rotas acessíveis apenas para usuários com nível de acesso 1
-            // Route::apiResource('accessLevel', 'App\Http\Controllers\AccessLevelController');
             Route::post('accessLevel', 'App\Http\Controllers\AccessLevelController@store');
-            Route::put('accessLevel/{id}', 'App\Http\Controllers\AccessLevelController@update');
+            Route::post('accessLevel/{id}', 'App\Http\Controllers\AccessLevelController@update');
             Route::delete('accessLevel/{id}', 'App\Http\Controllers\AccessLevelController@destroy');
 
-            // Route::apiResource('state', 'App\Http\Controllers\StateController');
             Route::post('state', 'App\Http\Controllers\StateController@store');
-            Route::put('state/{id}', 'App\Http\Controllers\StateController@update');
+            Route::post('state/{id}', 'App\Http\Controllers\StateController@update');
             Route::delete('state/{id}', 'App\Http\Controllers\StateController@destroy');
 
-            // Route::apiResource('city', 'App\Http\Controllers\CityController');
             Route::post('city', 'App\Http\Controllers\CityController@store');
-            Route::put('city/{id}', 'App\Http\Controllers\CityController@update');
+            Route::post('city/{id}', 'App\Http\Controllers\CityController@update');
             Route::delete('city/{id}', 'App\Http\Controllers\CityController@destroy');
 
-            // Route::apiResource('stadium', 'App\Http\Controllers\StadiumFootballController');
             Route::post('stadium', 'App\Http\Controllers\StadiumFootballController@store');
-            Route::put('stadium/{id}', 'App\Http\Controllers\StadiumFootballController@update');
+            Route::post('stadium/{id}', 'App\Http\Controllers\StadiumFootballController@update');
             Route::delete('stadium/{id}', 'App\Http\Controllers\StadiumFootballController@destroy');
 
-            // Route::apiResource('championship', 'App\Http\Controllers\ChampionshipController');
             Route::post('championship', 'App\Http\Controllers\ChampionshipController@store');
-            Route::put('championship/{id}', 'App\Http\Controllers\ChampionshipController@update');
+            Route::post('championship/{id}', 'App\Http\Controllers\ChampionshipController@update');
             Route::delete('championship/{id}', 'App\Http\Controllers\ChampionshipController@destroy');
 
-            // Route::apiResource('coach', 'App\Http\Controllers\CoachController');
             Route::post('coach', 'App\Http\Controllers\CoachController@store');
-            Route::put('coach/{id}', 'App\Http\Controllers\CoachController@update');
+            Route::post('coach/{id}', 'App\Http\Controllers\CoachController@update');
             Route::delete('coach/{id}', 'App\Http\Controllers\CoachController@destroy');
 
-            // Route::apiResource('positionPlayer', 'App\Http\Controllers\PositionPlayerController');
             Route::post('positionPlayer', 'App\Http\Controllers\PositionPlayerController@store');
-            Route::put('positionPlayer/{id}', 'App\Http\Controllers\PositionPlayerController@update');
+            Route::post('positionPlayer/{id}', 'App\Http\Controllers\PositionPlayerController@update');
             Route::delete('positionPlayer/{id}', 'App\Http\Controllers\PositionPlayerController@destroy');
 
-            // Route::apiResource('player', 'App\Http\Controllers\PlayerController');
             Route::post('player', 'App\Http\Controllers\PlayerController@store');
-            Route::put('player/{id}', 'App\Http\Controllers\PlayerController@update');
+            Route::post('player/{id}', 'App\Http\Controllers\PlayerController@update');
             Route::delete('player/{id}', 'App\Http\Controllers\PlayerController@destroy');
 
-            // Route::apiResource('team', 'App\Http\Controllers\TeamController');
             Route::post('team', 'App\Http\Controllers\TeamController@store');
-            Route::put('team/{id}', 'App\Http\Controllers\TeamController@update');
+            Route::post('team/{id}', 'App\Http\Controllers\TeamController@update');
             Route::delete('team/{id}', 'App\Http\Controllers\TeamController@destroy');
 
-            // Route::apiResource('teamEdition', 'App\Http\Controllers\TeamEditionController');
             Route::post('teamEdition', 'App\Http\Controllers\TeamEditionController@store');
-            Route::put('teamEdition/{id}', 'App\Http\Controllers\TeamEditionController@update');
+            Route::post('teamEdition/{id}', 'App\Http\Controllers\TeamEditionController@update');
             Route::delete('teamEdition/{id}', 'App\Http\Controllers\TeamEditionController@destroy');
 
-            // Route::apiResource('playerEdition', 'App\Http\Controllers\PlayerEditionController');
             Route::post('playerEdition', 'App\Http\Controllers\PlayerEditionController@store');
-            Route::put('playerEdition/{id}', 'App\Http\Controllers\PlayerEditionController@update');
+            Route::post('playerEdition/{id}', 'App\Http\Controllers\PlayerEditionController@update');
             Route::delete('playerEdition/{id}', 'App\Http\Controllers\PlayerEditionController@destroy');
             
-            // Route::apiResource('statusLineup', 'App\Http\Controllers\StatusLineupController');
             Route::post('statusLineup', 'App\Http\Controllers\StatusLineupController@store');
-            Route::put('statusLineup/{id}', 'App\Http\Controllers\StatusLineupController@update');
+            Route::post('statusLineup/{id}', 'App\Http\Controllers\StatusLineupController@update');
             Route::delete('statusLineup/{id}', 'App\Http\Controllers\StatusLineupController@destroy');
 
-            // Route::apiResource('championshipRound', 'App\Http\Controllers\ChampionshipRoundController');
             Route::post('championshipRound', 'App\Http\Controllers\ChampionshipRoundController@store');
-            Route::put('championshipRound/{id}', 'App\Http\Controllers\ChampionshipRoundController@update');
+            Route::post('championshipRound/{id}', 'App\Http\Controllers\ChampionshipRoundController@update');
             Route::delete('championshipRound/{id}', 'App\Http\Controllers\ChampionshipRoundController@destroy');
 
-            // Route::apiResource('soccerMatch', 'App\Http\Controllers\SoccerMatchController');
             Route::post('soccerMatch', 'App\Http\Controllers\SoccerMatchController@store');
-            Route::put('soccerMatch/{id}', 'App\Http\Controllers\SoccerMatchController@update');
+            Route::post('soccerMatch/{id}', 'App\Http\Controllers\SoccerMatchController@update');
             Route::delete('soccerMatch/{id}', 'App\Http\Controllers\SoccerMatchController@destroy');
 
             Route::post('matchLineup', 'App\Http\Controllers\MatchLineupController@store');
-            Route::put('matchLineup/{id}', 'App\Http\Controllers\MatchLineupController@update');
+            Route::post('matchLineup/{id}', 'App\Http\Controllers\MatchLineupController@update');
             Route::delete('matchLineup/{id}', 'App\Http\Controllers\MatchLineupController@destroy');
 
             Route::post('substitution', 'App\Http\Controllers\SubstitutionController@store');
-            Route::put('substitution/{id}', 'App\Http\Controllers\SubstitutionController@update');
+            Route::post('substitution/{id}', 'App\Http\Controllers\SubstitutionController@update');
             Route::delete('substitution/{id}', 'App\Http\Controllers\SubstitutionController@destroy');
             
+            Route::delete('teamGame/{id}', 'App\Http\Controllers\TeamGameController@destroy');
 
-            // STORE, UPDATE AND DESTROY BY ADMIN ADMIN
-            // Route::post('name', 'App\Http\Controllers\nameController@store');
-            // Route::put('name/{id}', 'App\Http\Controllers\nameController@update');
-            // Route::delete('name/{id}', 'App\Http\Controllers\nameController@destroy');
-
+            Route::delete('teamGameEdition/{id}', 'App\Http\Controllers\TeamGameEditionController@destroy');
+            
         });
 
     });

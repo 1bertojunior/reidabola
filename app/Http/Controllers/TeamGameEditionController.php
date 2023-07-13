@@ -3,84 +3,68 @@
 namespace App\Http\Controllers;
 
 use App\Models\TeamGameEdition;
-use App\Http\Requests\StoreTeamGameEditionRequest;
-use App\Http\Requests\UpdateTeamGameEditionRequest;
+use Illuminate\Http\Request;
 
 class TeamGameEditionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public $teamGameEdition;
+
+    public function __construct(TeamGameEdition $teamGameEdition)
+    {
+        $this->teamGameEdition = $teamGameEdition;
+    }
+
     public function index()
     {
-        //
+        $teamGameEditions = $this->teamGameEdition->with(['teamGame', 'championshipEdition'])->get();
+        return $teamGameEditions;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function show($id)
     {
-        //
+        $teamGameEdition = TeamGameEdition::with('teamGame', 'championshipEdition')->find($id);
+
+        if ($teamGameEdition === null) {
+            return response()->json(['error' => 'Nenhum dado encontrado.'], 404);
+        }
+
+        return $teamGameEdition;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreTeamGameEditionRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreTeamGameEditionRequest $request)
+    public function store(Request $request)
     {
-        //
+        $data = $request->all();
+
+        $teamGameEdition = TeamGameEdition::create($data);
+
+        return $teamGameEdition;
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\TeamGameEdition  $teamGameEdition
-     * @return \Illuminate\Http\Response
-     */
-    public function show(TeamGameEdition $teamGameEdition)
+    public function update(Request $request, $id)
     {
-        //
+        $teamGameEdition = TeamGameEdition::find($id);
+
+        if ($teamGameEdition === null) {
+            return response()->json(['error' => 'Nenhum dado encontrado.'], 404);
+        }
+
+        $teamGameEdition->update($request->all());
+
+        return $teamGameEdition;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\TeamGameEdition  $teamGameEdition
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(TeamGameEdition $teamGameEdition)
+    public function destroy($id)
     {
-        //
+        $teamGameEdition = TeamGameEdition::find($id);
+
+        if ($teamGameEdition === null) {
+            return response()->json(['error' => 'Nenhum dado encontrado.'], 404);
+        }
+
+        $teamGameEdition->delete();
+
+        return ['msg' => 'Removido com sucesso.'];
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateTeamGameEditionRequest  $request
-     * @param  \App\Models\TeamGameEdition  $teamGameEdition
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateTeamGameEditionRequest $request, TeamGameEdition $teamGameEdition)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\TeamGameEdition  $teamGameEdition
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(TeamGameEdition $teamGameEdition)
-    {
-        //
-    }
 }
