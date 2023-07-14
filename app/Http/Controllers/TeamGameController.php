@@ -15,16 +15,36 @@ class TeamGameController extends Controller
         $this->teamGame = $teamGame;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $teamGames = $this->teamGame->with('user')->get();
-        return $teamGames;
+        try {
+            $data = array();
+
+            if($request->has('att_user')){
+                $att_user = $request->att_user;
+                $data = $this->teamGame->with('user:id,' . $att_user);
+            }else{
+                $data = $this->teamGame->with('user');
+            }
+
+            $att = $request->att;
+            if ($request->has('att')) {
+                $data = $data->selectRaw($att)->get();
+                // $data = $this->getDataWithByAttribute($this->teamGame, $att, 'user:id,' . $att_user);
+            } else {
+                $data = $data->teamGame->get();
+                // $data = $this->getAllDataWith($this->teamGame, 'user');
+            }
+
+            return response()->json($data);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while processing the request.'], 500);
+        }
     }
 
     public function store(Request $request)
     {
         $data = $request->all();
-
         $request->validate($this->teamGame->rules(), $this->teamGame->feedback());
         $teamGame = $this->teamGame->create($data);
 
