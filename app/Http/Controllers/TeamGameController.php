@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TeamGame;
-use App\Repositories\TeamGameRepository;
+// use App\Repositories\TeamGameRepository;
 use Illuminate\Http\Request;
 // use App\Http\Requests\StoreTeamGameRequest;
 // use App\Http\Requests\UpdateTeamGameRequest;
@@ -20,7 +20,7 @@ class TeamGameController extends Controller
     {
         try {
 
-            $teamGameRepository = new TeamGameRepository($this->teamGame);
+            // $teamGameRepository = new TeamGameRepository($this->teamGame);
             $data = array();
 
             if($request->has('att_user')){
