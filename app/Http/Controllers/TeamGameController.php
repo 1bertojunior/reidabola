@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TeamGame;
+use App\Repositories\TeamGameRepository;
 use Illuminate\Http\Request;
 // use App\Http\Requests\StoreTeamGameRequest;
 // use App\Http\Requests\UpdateTeamGameRequest;
@@ -18,6 +19,8 @@ class TeamGameController extends Controller
     public function index(Request $request)
     {
         try {
+
+            $teamGameRepository = new TeamGameRepository($this->teamGame);
             $data = array();
 
             if($request->has('att_user')){
@@ -27,13 +30,20 @@ class TeamGameController extends Controller
                 $data = $this->teamGame->with('user');
             }
 
+            if($request->has('filter')){
+                $filters = explode(';', $request->filter);
+
+                foreach ($filters as $filter) {
+                    $f = explode(':', $filter);
+                    $data = $data->where($f[0], $f[1], $f[2]);
+                }
+            }
+
             $att = $request->att;
             if ($request->has('att')) {
                 $data = $data->selectRaw($att)->get();
-                // $data = $this->getDataWithByAttribute($this->teamGame, $att, 'user:id,' . $att_user);
             } else {
                 $data = $data->teamGame->get();
-                // $data = $this->getAllDataWith($this->teamGame, 'user');
             }
 
             return response()->json($data);
