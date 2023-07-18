@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\TeamGame;
 // use App\Repositories\TeamGameRepository;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 // use App\Http\Requests\StoreTeamGameRequest;
 // use App\Http\Requests\UpdateTeamGameRequest;
 
@@ -19,8 +20,6 @@ class TeamGameController extends Controller
     public function index(Request $request)
     {
         try {
-
-            // $teamGameRepository = new TeamGameRepository($this->teamGame);
             $data = array();
 
             if($request->has('att_user')){
@@ -43,7 +42,7 @@ class TeamGameController extends Controller
             if ($request->has('att')) {
                 $data = $data->selectRaw($att)->get();
             } else {
-                $data = $data->teamGame->get();
+                $data = $data->get();
             }
 
             return response()->json($data);
@@ -54,20 +53,27 @@ class TeamGameController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-        $request->validate($this->teamGame->rules(), $this->teamGame->feedback());
-        $teamGame = $this->teamGame->create($data);
+        try {
+            $this->validate($request, $this->teamGame->rules(), $this->teamGame->feedback());
 
-        return $teamGame;
+            $teamGame = $this->teamGame->create($request->all());
+
+            return response()->json($teamGame, 201);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 400);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error creating team edition.'], 500);
+        }
     }
 
     public function show($id)
     {
-        $result = $this->teamGame->with('accessLevel')->find($id);
-        if ($result === null) {
-            $result = response()->json(['error' => "Nenhum dado encontrado."], 404);
+        try {
+            $teamGame = $this->teamGame->with('user')->findOrFail($id);
+            return response()->json($teamGame, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Equipe não encontrada.'], 404);
         }
-        return $result;
     }
 
 
