@@ -37,6 +37,9 @@ Route::prefix('v1')->group(function () {
         Route::get('championship', 'App\Http\Controllers\ChampionshipController@index');
         Route::get('championship/{id}', 'App\Http\Controllers\ChampionshipController@show');
 
+        Route::get('championshipEdition', 'App\Http\Controllers\ChampionshipEditionController@index');
+        Route::get('championshipEdition/{id}', 'App\Http\Controllers\ChampionshipEditionController@show');
+
         Route::get('coach', 'App\Http\Controllers\CoachController@index');
         Route::get('coach/{id}', 'App\Http\Controllers\CoachController@show');
 

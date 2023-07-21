@@ -4,14 +4,37 @@ namespace App\Http\Controllers;
 
 use App\Models\ChampionshipRound;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use App\Repositories\ChampionshipRoundRepository;
+
 
 class ChampionshipRoundController extends Controller
 {
-    public function index()
+    public $championshipRound;
+
+    public function __construct(ChampionshipRound $championshipRound){
+        $this->championshipRound = $championshipRound;
+    }
+
+    public function index(Request $request)
     {
         try {
-            $rounds = ChampionshipRound::all();
-            return $rounds;
+            $championshipRoundRepository = new ChampionshipRoundRepository($this->championshipRound);
+            
+            if ($request->has('filter')) {
+                $championshipRoundRepository->filter($request->filter);                
+            }
+
+            if($request->has('att')){
+                $championshipRoundRepository->selectAttributes($request->att);
+            }
+
+            $result  = $championshipRoundRepository->getResult();
+            return response()->json( $result, 200 );
+            
+            // $rounds = $this->championshipRound->all();
+
+            // return $rounds;
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to retrieve championship rounds'], 500);
         }
@@ -20,78 +43,66 @@ class ChampionshipRoundController extends Controller
     public function show($id)
     {
         try {
-            $round = ChampionshipRound::find($id);
-
-            if ($round === null) {
-                return response()->json(['error' => 'Championship round not found'], 404);
-            }
-
-            return $round;
+            $championshipRound = $this->championshipRound->with('user')->findOrFail($id);
+            return response()->json($championshipRound, 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to retrieve championship round'], 500);
+            return response()->json(['error' => 'Equipe não encontrada.'], 404);
         }
     }
 
     public function store(Request $request)
     {
         try {
-            $data = $request->all();
+            $this->validate($request, $this->championshipRound->rules(), $this->championshipRound->feedback());
 
-            $round = new ChampionshipRound([
-                'name' => isset($data['name']) ? $data['name'] : null,
-                'round' => isset($data['round']) ? $data['round'] : null,
-            ]);
+            $championshipRound = $this->championshipRound->create($request->all());
 
-            $round->save();
-
-            return response()->json([
-                'msg' => 'Championship round created successfully',
-                'round' => $round
-            ], 201);
+            return response()->json($championshipRound, 201);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 400);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to create championship round'], 500);
+            return response()->json(['error' => 'Error creating team edition.'], 500);
         }
     }
 
     public function update(Request $request, $id)
     {
         try {
-            $round = ChampionshipRound::find($id);
-
-            if ($round === null) {
-                return response()->json(['error' => 'Championship round not found'], 404);
-            }
-
-            if ($request->method() === "PATCH") {
-                $requestData = $request->all();
-
-                $rules = array();
-                foreach ($round->rules() as $input => $rule) {
-                    if (array_key_exists($input, $requestData)) {
-                        $rules[$input] = $rule;
-                    }
-                }
-
-                $request->validate($rules, $round->feedback());
+            $championshipRound = $this->championshipRound->find($id);
+    
+            if ($championshipRound === null) {
+                return response()->json(['error' => "Nenhum dado encontrado."], 404);
             } else {
-                $request->validate($round->rules(), $round->feedback());
+                if ($request->method() === "PATCH") {
+                    $requestData = $request->all();
+    
+                    $rules = array();
+                    foreach ($this->championshipRound->rules($id) as $input => $rule) {
+                        if (array_key_exists($input, $requestData)) {
+                            $rules[$input] = $rule;
+                        }
+                    }
+                    unset($rules['user_id']);
+                    $this->validate($request, $rules, $this->championshipRound->feedback());
+                } else {
+                    $rules = $this->championshipRound->rules($id);
+                    unset($rules['user_id']);
+                    $this->validate($request, $rules, $this->championshipRound->feedback());
+                }
+    
+                $championshipRound->update($request->except('user_id'));
             }
-
-            $round->update($request->all());
-
-            return response()->json([
-                'msg' => 'Championship round updated successfully',
-                'round' => $round
-            ], 200);
+    
+            return $championshipRound;
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to update championship round'], 500);
+            return response()->json(['error' => 'An error occurred while updating championshipRound.'], 500);
         }
     }
-
+    
     public function destroy($id)
     {
         try {
-            $round = ChampionshipRound::find($id);
+            $round =  $this->championshipRound->find($id);
 
             if ($round === null) {
                 return response()->json(['error' => 'Championship round not found'], 404);

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\ChampionshipEdition;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use App\Repositories\ChampionshipEditionRepository;
 
 class ChampionshipEditionController extends Controller
 {
@@ -14,57 +16,99 @@ class ChampionshipEditionController extends Controller
         $this->championshipEdition = $championshipEdition;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $editions = $this->championshipEdition->with('championship')->get();
-        return response()->json($editions);
+        try {
+            $championshipEditionRepository = new ChampionshipEditionRepository($this->championshipEdition);
+
+            if ($request->has('att_championship')) {
+                $att_championship = 'championship:id,' . $request->att_championship;
+                $championshipEditionRepository->selectAttributesRelated($att_championship);
+            } else {
+                $championshipEditionRepository->selectAttributesRelated('championship');
+            }
+
+            if ($request->has('filter')) {
+                $championshipEditionRepository->filter($request->filter);
+            }
+
+            if ($request->has('att')) {
+                $championshipEditionRepository->selectAttributes($request->att);
+            }
+
+            $result = $championshipEditionRepository->getResult();
+            return response()->json($result, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while fetching championship editions.'], 500);
+        }
     }
 
     public function show($id)
     {
-        $edition = $this->championshipEdition->with('championship')->find($id);
+        try {
+            $championshipEdition = $this->championshipEdition->with('championship')->find($id);
 
-        if ($edition === null) {
-            return response()->json(['error' => 'Edição de campeonato não encontrada.'], 404);
+            if ($championshipEdition === null) {
+                return response()->json(['error' => 'Championship edition not found.'], 404);
+            }
+
+            return response()->json($championshipEdition, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while fetching championship edition.'], 500);
         }
-
-        return response()->json($edition);
     }
 
     public function store(Request $request)
     {
-        $this->validate($request, $this->championshipEdition->rules(), $this->championshipEdition->feedback());
+        try {
+            $this->validate($request, $this->championshipEdition->rules(), $this->championshipEdition->feedback());
 
-        $edition = $this->championshipEdition->create($request->all());
+            $championshipEdition = $this->championshipEdition->create($request->all());
 
-        return response()->json($edition, 201);
+            return response()->json($championshipEdition, 201);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 400);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error creating championship edition.'], 500);
+        }
     }
 
     public function update(Request $request, $id)
     {
-        $edition = $this->championshipEdition->find($id);
+        $championshipEdition = $this->championshipEdition->find($id);
 
-        if ($edition === null) {
-            return response()->json(['error' => 'Edição de campeonato não encontrada.'], 404);
+        if ($championshipEdition === null) {
+            return response()->json(['error' => "Championship edition not found."], 404);
+        } else {
+            if ($request->method() === "PATCH") {
+                $requestData = $request->all();
+
+                $rules = array();
+                foreach ($this->championshipEdition->rules($id) as $input => $rule) {
+                    if (array_key_exists($input, $requestData)) {
+                        $rules[$input] = $rule;
+                    }
+                }
+                $this->validate($request, $rules, $this->championshipEdition->feedback());
+            } else {
+                $this->validate($request, $this->championshipEdition->rules(), $this->championshipEdition->feedback());
+            }
+
+            $championshipEdition->update($request->all());
         }
 
-        $this->validate($request, $this->championshipEdition->rules(), $this->championshipEdition->feedback());
-
-        $edition->update($request->all());
-
-        return response()->json($edition);
+        return response()->json($championshipEdition);
     }
 
     public function destroy($id)
     {
-        $edition = $this->championshipEdition->find($id);
-
-        if ($edition === null) {
-            return response()->json(['error' => 'Edição de campeonato não encontrada.'], 404);
+        try {
+            $championshipEdition = $this->championshipEdition->find($id);
+            $championshipEdition = ($championshipEdition === null) ? 0 : $championshipEdition->delete();
+            return $championshipEdition ? response()->json(['message' => 'Successfully removed.'], 200) : response()->json(['error' => 'No data found.'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while removing the championship edition.'], 500);
         }
-
-        $edition->delete();
-
-        return response()->json(['message' => 'Edição de campeonato removida com sucesso.']);
     }
+
 }

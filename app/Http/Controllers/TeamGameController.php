@@ -70,33 +70,38 @@ class TeamGameController extends Controller
 
     public function update(Request $request, $id)
     {
-        $teamGame = $this->teamGame->find($id);
+        try {
+            $teamGame = $this->teamGame->find($id);
 
-        if ($teamGame === null) {
-            return response()->json(['error' => "Nenhum dado encontrado."], 404);
-        } else {
-            if ($request->method() === "PATCH") {
-                $requestData = $request->all();
-
-                $rules = array();
-                foreach ($this->teamGame->rules($id) as $input => $rule) {
-                    if (array_key_exists($input, $requestData)) {
-                        $rules[$input] = $rule;
-                    }
-                }
-                unset($rules['user_id']);
-                $this->validate($request, $rules, $this->teamGame->feedback());
+            if ($teamGame === null) {
+                return response()->json(['error' => "Nenhum dado encontrado."], 404);
             } else {
-                $rules = $this->teamGame->rules($id);
-                unset($rules['user_id']);
-                $this->validate($request, $rules, $this->teamGame->feedback());
+                if ($request->method() === "PATCH") {
+                    $requestData = $request->all();
+
+                    $rules = array();
+                    foreach ($this->teamGame->rules($id) as $input => $rule) {
+                        if (array_key_exists($input, $requestData)) {
+                            $rules[$input] = $rule;
+                        }
+                    }
+                    unset($rules['user_id']);
+                    $this->validate($request, $rules, $this->teamGame->feedback());
+                } else {
+                    $rules = $this->teamGame->rules($id);
+                    unset($rules['user_id']);
+                    $this->validate($request, $rules, $this->teamGame->feedback());
+                }
+
+                $teamGame->update($request->except('user_id'));
             }
 
-            $teamGame->update($request->except('user_id'));
+            return $teamGame;
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while updating team game.'], 500);
         }
-
-        return $teamGame;
     }
+
 
     public function destroy($id)
     {
