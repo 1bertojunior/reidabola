@@ -6,8 +6,6 @@ use App\Models\TeamGame;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use App\Repositories\TeamGameRepository;
-// use App\Http\Requests\StoreTeamGameRequest;
-// use App\Http\Requests\UpdateTeamGameRequest;
 
 class TeamGameController extends Controller
 {
@@ -20,7 +18,6 @@ class TeamGameController extends Controller
     public function index(Request $request)
     {
         $teamGameRepository = new TeamGameRepository($this->teamGame);
-        $data = $this->teamGame;
 
         try{
             if ($request->has('att_user')) {
@@ -36,8 +33,6 @@ class TeamGameController extends Controller
 
             if($request->has('att')){
                 $teamGameRepository->selectAttributes($request->att);
-                //     $att = $request->att;
-        //     $data = $request->has('att') ? $data->selectRaw($att)->get() : $data->get();
             }
 
             $result  = $teamGameRepository->getResult();
@@ -46,41 +41,6 @@ class TeamGameController extends Controller
             return response()->json(['error' => 'An error occurred while processing the request.'], 500);
         }
 
-        // try {
-        //     $data = $this->teamGame;
-    
-        //     if ($request->has('att_user')) {
-        //         $att_user = $request->att_user;
-        //         $data = $data->with('user:id,' . $att_user);
-        //     } else {
-        //         $data = $data->with('user');
-        //     }
-    
-            // if ($request->has('filter')) {
-            //     $filters = explode(';', $request->filter);
-    
-            //     foreach ($filters as $filter) {
-            //         $f = explode(':', $filter);
-    
-            //         // Verificar se o filtro é em um atributo de relacionamento
-            //         if (str_contains($f[0], '.')) {
-            //             $relationFilter = explode('.', $f[0]);
-            //             $data = $data->whereHas($relationFilter[0], function ($query) use ($relationFilter, $f) {
-            //                 $query->where($relationFilter[1], $f[1], $f[2]);
-            //             });
-            //         } else {
-            //             $data = $data->where($f[0], $f[1], $f[2]);
-            //         }
-            //     }
-            // }
-    
-        //     $att = $request->att;
-        //     $data = $request->has('att') ? $data->selectRaw($att)->get() : $data->get();
-    
-        //     return response()->json($data);
-        // } catch (\Exception $e) {
-        //     return response()->json(['error' => 'An error occurred while processing the request.'], 500);
-        // }
     }
 
     public function store(Request $request)
@@ -107,7 +67,6 @@ class TeamGameController extends Controller
             return response()->json(['error' => 'Equipe não encontrada.'], 404);
         }
     }
-
 
     public function update(Request $request, $id)
     {
@@ -139,12 +98,15 @@ class TeamGameController extends Controller
         return $teamGame;
     }
 
-
     public function destroy($id)
     {
-
-        $result = $this->teamGame->find($id);
-        $result = ($result === null) ? 0 : $result->delete();
-        return $result ? ['msg' => "Removido com sucesso"] :  response()->json([ 'error' => "Nenhum dado encontrado"], 404); ;
+        try {
+            $result = $this->teamGame->find($id);
+            $result = ($result === null) ? 0 : $result->delete();
+            return $result ? response()->json(['message' => 'Successfully removed.'], 200) : response()->json(['error' => 'No data found.'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while removing the team game.'], 500);
+        }
     }
+
 }
