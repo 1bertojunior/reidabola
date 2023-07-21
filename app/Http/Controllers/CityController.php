@@ -4,103 +4,114 @@ namespace App\Http\Controllers;
 
 use App\Models\City;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use App\Repositories\CityRepository;
 
 class CityController extends Controller
 {
-    public $citie;
+    protected $citie;
 
     public function __construct(City $citie){
         $this->citie = $citie;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $cities = $this->citie->with('state')->get();
-        return $cities;
-    }
+        $cityRepository = new CityRepository($this->citie);
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $data = $request->all();
-        
-        $city = new City([
-            'name' => isset($data['name']) ? $data['name'] : null,
-            'abb' => isset($data['abb']) ? $data['abb'] : null,
-            'state_id' => isset($data['state_id']) ? $data['state_id'] : null
-        ]);        
+        try{
+            if ($request->has('att_state')) {
+                $att_state = 'state:id,' .  $request->att_state;
+                $cityRepository->selectAttributesRelated($att_state);
+            } else {
+                $cityRepository->selectAttributesRelated('state');
+            }
 
-        $rules = $city->rules();
-        $request->validate($rules, $city->feedback());
+            if ($request->has('filter')) {
+                $cityRepository->filter($request->filter);                
+            }
 
-        $city->save();
+            if($request->has('att')){
+                $cityRepository->selectAttributes($request->att);
+            }
 
-        return response()->json([
-            'msg' => 'City created successfully',
-            'city' => $city
-        ], 201);
+            $result  = $cityRepository->getResult();
+            return response()->json( $result, 200 );
+        }catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while processing the request.'], 500);
+        }
+
     }
 
     public function show($id)
     {
-        $result = $this->citie->with('state')->find($id);
-    
-        if ($result === null) $result = response()->json(['error' => "Nenhum dado encontrado."], 404);
-        else $result = response()->json($result, 200);
-    
-        return $result;
+        try {
+            $citie = $this->citie->with('state')->findOrFail($id);
+            return response()->json($citie, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Not found.'], 404);
+        }
         
+    }
+
+    public function store(Request $request)
+    {
+        try {
+            $this->validate($request, $this->citie->rules(), $this->citie->feedback());
+
+            $citie = $this->citie->create($request->all());
+
+            return response()->json($citie, 201);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 400);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error creating.'], 500);
+        }
     }
 
     public function update(Request $request, $id)
     {
-        $city = $this->citie->find($id);
+        try {
+            $citie = $this->citie->find($id);
 
-        if ($city === null) {
-            return response()->json(['error' => "Nenhum dado encontrado."], 404);
-        } else {
+            if ($citie === null) {
+                return response()->json(['error' => 'Not found'], 404);
+            }
+
             if ($request->method() === "PATCH") {
                 $requestData = $request->all();
 
                 $rules = array();
-                foreach ($this->citie->rules($id) as $input => $rule) {
+                foreach ($citie->rules() as $input => $rule) {
                     if (array_key_exists($input, $requestData)) {
                         $rules[$input] = $rule;
                     }
                 }
-                unset($rules['user_id']);
-                $this->validate($request, $rules, $this->citie->feedback());
+
+                $request->validate($rules, $citie->feedback());
             } else {
-                $rules = $this->citie->rules($id);
-                unset($rules['user_id']);
-                $this->validate($request, $rules, $this->citie->feedback());
+                $request->validate($citie->rules(), $citie->feedback());
             }
 
-            $city->update($request->except('user_id'));
-        }
+            $citie->update($request->all());
 
-        return response()->json(
-            $city,
-            200
-        );
+            return response()->json([
+                'msg' => 'Updated successfully',
+                'citie' => $citie
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to update'], 500);
+        }
     }
 
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\City  $city
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        $result = $this->citie->find($id);
-        $result = ($result === null) ? 0 : $result->delete();
-        return $result ? ['msg' => "Removido com sucesso"] :  response()->json([ 'error' => "Nenhum dado encontrado"], 404); ;
+        try {
+            $result = $this->citie->find($id);
+            $result = ($result === null) ? 0 : $result->delete();
+            return $result ? response()->json(['message' => 'Successfully removed.'], 200) : response()->json(['error' => 'No data found.'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while removing.'], 500);
+        }
     }
 }

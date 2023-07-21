@@ -102,7 +102,6 @@ class TeamGameController extends Controller
         }
     }
 
-
     public function destroy($id)
     {
         try {
