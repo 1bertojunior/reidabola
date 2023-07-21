@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\TeamGame;
-// use App\Repositories\TeamGameRepository;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use App\Repositories\TeamGameRepository;
 // use App\Http\Requests\StoreTeamGameRequest;
 // use App\Http\Requests\UpdateTeamGameRequest;
 
@@ -19,36 +19,68 @@ class TeamGameController extends Controller
 
     public function index(Request $request)
     {
-        try {
-            $data = array();
+        $teamGameRepository = new TeamGameRepository($this->teamGame);
+        $data = $this->teamGame;
 
-            if($request->has('att_user')){
-                $att_user = $request->att_user;
-                $data = $this->teamGame->with('user:id,' . $att_user);
-            }else{
-                $data = $this->teamGame->with('user');
-            }
-
-            if($request->has('filter')){
-                $filters = explode(';', $request->filter);
-
-                foreach ($filters as $filter) {
-                    $f = explode(':', $filter);
-                    $data = $data->where($f[0], $f[1], $f[2]);
-                }
-            }
-
-            $att = $request->att;
-            if ($request->has('att')) {
-                $data = $data->selectRaw($att)->get();
+        try{
+            if ($request->has('att_user')) {
+                $att_user = 'user:id,' .  $request->att_user;
+                $teamGameRepository->selectAttributesRelated($att_user);
             } else {
-                $data = $data->get();
+                $teamGameRepository->selectAttributesRelated('user');
             }
 
-            return response()->json($data);
-        } catch (\Exception $e) {
+            if ($request->has('filter')) {
+                $teamGameRepository->filter($request->filter);                
+            }
+
+            if($request->has('att')){
+                $teamGameRepository->selectAttributes($request->att);
+                //     $att = $request->att;
+        //     $data = $request->has('att') ? $data->selectRaw($att)->get() : $data->get();
+            }
+
+            $result  = $teamGameRepository->getResult();
+            return response()->json( $result, 200 );
+        }catch (\Exception $e) {
             return response()->json(['error' => 'An error occurred while processing the request.'], 500);
         }
+
+        // try {
+        //     $data = $this->teamGame;
+    
+        //     if ($request->has('att_user')) {
+        //         $att_user = $request->att_user;
+        //         $data = $data->with('user:id,' . $att_user);
+        //     } else {
+        //         $data = $data->with('user');
+        //     }
+    
+            // if ($request->has('filter')) {
+            //     $filters = explode(';', $request->filter);
+    
+            //     foreach ($filters as $filter) {
+            //         $f = explode(':', $filter);
+    
+            //         // Verificar se o filtro é em um atributo de relacionamento
+            //         if (str_contains($f[0], '.')) {
+            //             $relationFilter = explode('.', $f[0]);
+            //             $data = $data->whereHas($relationFilter[0], function ($query) use ($relationFilter, $f) {
+            //                 $query->where($relationFilter[1], $f[1], $f[2]);
+            //             });
+            //         } else {
+            //             $data = $data->where($f[0], $f[1], $f[2]);
+            //         }
+            //     }
+            // }
+    
+        //     $att = $request->att;
+        //     $data = $request->has('att') ? $data->selectRaw($att)->get() : $data->get();
+    
+        //     return response()->json($data);
+        // } catch (\Exception $e) {
+        //     return response()->json(['error' => 'An error occurred while processing the request.'], 500);
+        // }
     }
 
     public function store(Request $request)
