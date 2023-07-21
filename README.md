@@ -201,7 +201,7 @@ A documentação completa da API Fantasy Game está disponível em [URL_DA_API/d
 
 ## Autores
 
-- Humberto Júnior (1berto_junior) - [GitHub](https://github.com/1bertojunior/reidabola)
+- Humberto Júnior (1berto_junior) - [GitHub](https://github.com/1bertojunior)
 
 ## Suporte e Contribuições
 
