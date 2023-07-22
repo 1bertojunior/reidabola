@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\MatchLineup;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Validation\ValidationException;
+use App\Repositories\MatchLineupRepository;
 
 class MatchLineupController extends Controller
 {
@@ -15,14 +17,55 @@ class MatchLineupController extends Controller
         $this->matchLineup = $matchLineup;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            $lineups = $this->matchLineup->with(['playerEdition.player', 'soccerMatch', 'statusLineup'])->get();
-            return $lineups;
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to retrieve match lineups'], 500);
-        }
+        // try {
+        //     $lineups = $this->matchLineup
+        //         ->with([
+        //             'playerEdition.player',
+        //             'playerEdition.player.position',
+        //             'playerEdition.teamEdition',
+        //             'playerEdition.teamEdition.team',
+        //             'soccerMatch',
+        //             'soccerMatch.team1Edition.team',
+        //             'soccerMatch.team2Edition.team',
+        //             'statusLineup'
+        //         ])->get();
+        //     return $lineups;
+        // } catch (\Exception $e) {
+        //     return response()->json(['error' => 'Failed to retrieve match lineups'], 500);
+        // }
+        // try{
+            $matchLineupRepository = new MatchLineupRepository($this->matchLineup);
+
+            // if ($request->has('att_state')) {
+            //     $att_state = 'state:id,' .  $request->att_state;
+            //     $matchLineupRepository->selectAttributesRelated($att_state);
+            // } else {
+                $matchLineupRepository
+                    ->selectAttributesRelated([
+                        'playerEdition.player.position',
+                        'playerEdition.teamEdition.team',
+                        'soccerMatch.team1Edition.team',
+                        'soccerMatch.team2Edition.team',
+                        'soccerMatch.championshipRound',
+                        'statusLineup',
+                    ]);
+            // }
+
+            if ($request->has('filter')) {
+                $matchLineupRepository->filter($request->filter);                
+            }
+
+            if($request->has('att')){
+                $matchLineupRepository->selectAttributes($request->att);
+            }
+
+            $result  = $matchLineupRepository->getResult();
+            return response()->json( $result, 200 );
+        // }catch (\Exception $e) {
+            // return response()->json(['error' => 'An error occurred while processing the request.'], 500);
+        // }
     }
 
     public function show($id)

@@ -86,7 +86,8 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('matchGameLineup', 'App\Http\Controllers\MatchGameLineupController');
 
 
-        
+        Route::get('matchCardsStats', 'App\Http\Controllers\MatchCardsStatsController@index');
+        Route::get('matchCardsStats/{id}', 'App\Http\Controllers\MatchCardsStatsController@show');
 
         Route::get('matchGoalStats', 'App\Http\Controllers\MatchGoalStatsController@index');
         Route::get('matchGoalStats/{id}', 'App\Http\Controllers\MatchGoalStatsController@show'); 
@@ -165,6 +166,9 @@ Route::prefix('v1')->group(function () {
 
 
 
+            Route::post('matchCardsStats', 'App\Http\Controllers\MatchCardsStatsController@store');
+            Route::post('matchCardsStats/{id}', 'App\Http\Controllers\MatchCardsStatsController@update');
+            Route::delete('matchCardsStats/{id}', 'App\Http\Controllers\MatchCardsStatsController@destroy');
 
             Route::post('matchGoalStats', 'App\Http\Controllers\MatchGoalStatsController@store');
             Route::post('matchGoalStats/{id}', 'App\Http\Controllers\MatchGoalStatsController@update');
