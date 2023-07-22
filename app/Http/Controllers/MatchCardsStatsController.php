@@ -61,27 +61,15 @@ class MatchGoalStatsController extends Controller
     public function store(Request $request)
     {
         try {
-            $data = $request->all();
+            $this->validate($request, $this->matchGoalStats->rules(), $this->matchGoalStats->feedback());
 
-            $request->validate($this->matchGoalStats->rules(), $this->matchGoalStats->feedback());
+            $matchGoalStats = $this->matchGoalStats->create($request->all());
 
-            $matchGoalStats = new matchGoalStats([
-                'minute' => isset($data['minute']) ? $data['minute'] : null,
-                'card_yellow' => isset($data['card_yellow']) ? $data['card_yellow'] : false,
-                'card_red' => isset($data['card_red']) ? $data['card_red'] : false,
-                'soccer_match_id' => isset($data['soccer_match_id']) ? $data['soccer_match_id'] : null,
-                'player_commit_id' => isset($data['player_commit_id']) ? $data['player_commit_id'] : null,
-                'player_suffer_id' => isset($data['player_suffer_id']) ? $data['player_suffer_id'] : null,
-            ]);
-
-            $matchGoalStats->save();
-
-            return response()->json([
-                'msg' => 'Match cards stat created successfully',
-                'match_cards_stat' => $matchGoalStats
-            ], 201);
+            return response()->json($matchGoalStats, 201);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 400);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to create match cards stat'], 500);
+            return response()->json(['error' => 'Error creating.'], 500);
         }
     }
 
