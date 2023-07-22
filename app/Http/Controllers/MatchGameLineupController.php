@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\MatchGameLineup;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use App\Repositories\MatchGameLineupRepository;
+
 
 class MatchGameLineupController extends Controller
 {
@@ -14,14 +17,33 @@ class MatchGameLineupController extends Controller
         $this->matchGameLineup = $matchGameLineup;
     }
 
-    public function index()
-    {
-        try {
-            $matchGameLineups = $this->matchGameLineup->with(['teamGameEdition', 'playerLineup', 'championshipRound'])->get();
-            return $matchGameLineups;
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to retrieve match game lineups'], 500);
+    public function index(Request $request)
+    {        
+        try{
+            $matchGameLineupRepository = new MatchGameLineupRepository($this->matchGameLineup);
+
+            if ($request->has('att_soccer')) {
+                $att_soccer = 'soccer:id,' .  $request->att_soccer;
+                $matchGameLineupRepository->selectAttributesRelated($att_soccer);
+            } else {
+                $matchGameLineupRepository->selectAttributesRelated('soccer');
+            }
+
+            if ($request->has('filter')) {
+                $matchGameLineupRepository->filter($request->filter);                
+            }
+
+            if($request->has('att')){
+                $matchGameLineupRepository->selectAttributes($request->att);
+            }
+
+            $result  = $matchGameLineupRepository->getResult();
+            return response()->json( $result, 200 );
+        }catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while processing the request.'], 500);
         }
+
+    
     }
 
     public function show($id)
@@ -54,24 +76,39 @@ class MatchGameLineupController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
+    {        
         try {
             $matchGameLineup = $this->matchGameLineup->find($id);
 
             if ($matchGameLineup === null) {
-                return response()->json(['error' => 'Match game lineup not found'], 404);
+                return response()->json(['error' => 'Not found'], 404);
             }
 
-            $request->validate($this->matchGameLineup->rules(), $this->matchGameLineup->feedback());
+            if ($request->method() === "PATCH") {
+                $requestData = $request->all();
+
+                $rules = array();
+                foreach ($matchGameLineup->rules() as $input => $rule) {
+                    if (array_key_exists($input, $requestData)) {
+                        $rules[$input] = $rule;
+                    }
+                }
+
+                $request->validate($rules, $matchGameLineup->feedback());
+            } else {
+                $request->validate($matchGameLineup->rules(), $matchGameLineup->feedback());
+            }
+
             $matchGameLineup->update($request->all());
 
             return response()->json([
-                'msg' => 'Match game lineup updated successfully',
-                'matchGameLineup' => $matchGameLineup
+                'msg' => 'Updated successfully',
+                'citie' => $matchGameLineup
             ], 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to update match game lineup'], 500);
+            return response()->json(['error' => 'Failed to update'], 500);
         }
+    
     }
 
     public function destroy($id)
