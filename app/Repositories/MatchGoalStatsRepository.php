@@ -2,7 +2,7 @@
 
     namespace App\Repositories;
 
-    class MatchGoalStatsRepository extends AbstractRepository{
+    class MatchCardsStatsRepository extends AbstractRepository{
         
     }
 
