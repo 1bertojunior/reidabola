@@ -102,8 +102,6 @@ class ChampionshipController extends Controller
         return response()->json($championship);
     }
 
-
-
     public function destroy($id)
     {
         try {

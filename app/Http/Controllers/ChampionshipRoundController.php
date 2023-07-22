@@ -31,10 +31,6 @@ class ChampionshipRoundController extends Controller
 
             $result  = $championshipRoundRepository->getResult();
             return response()->json( $result, 200 );
-            
-            // $rounds = $this->championshipRound->all();
-
-            // return $rounds;
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to retrieve championship rounds'], 500);
         }
@@ -67,36 +63,29 @@ class ChampionshipRoundController extends Controller
 
     public function update(Request $request, $id)
     {
-        try {
-            $championshipRound = $this->championshipRound->find($id);
-    
-            if ($championshipRound === null) {
-                return response()->json(['error' => "Nenhum dado encontrado."], 404);
-            } else {
-                if ($request->method() === "PATCH") {
-                    $requestData = $request->all();
-    
-                    $rules = array();
-                    foreach ($this->championshipRound->rules($id) as $input => $rule) {
-                        if (array_key_exists($input, $requestData)) {
-                            $rules[$input] = $rule;
-                        }
+        $championshipRound = $this->championshipRound->find($id);
+
+        if ($championshipRound === null) {
+            return response()->json(['error' => 'Not found.'], 404);
+        } else {
+            if ($request->method() === "PATCH") {
+                $requestData = $request->all();
+
+                $rules = array();
+                foreach ($this->championshipRound->rules() as $input => $rule) {
+                    if (array_key_exists($input, $requestData)) {
+                        $rules[$input] = $rule;
                     }
-                    unset($rules['user_id']);
-                    $this->validate($request, $rules, $this->championshipRound->feedback());
-                } else {
-                    $rules = $this->championshipRound->rules($id);
-                    unset($rules['user_id']);
-                    $this->validate($request, $rules, $this->championshipRound->feedback());
                 }
-    
-                $championshipRound->update($request->except('user_id'));
+                $this->validate($request, $rules, $this->championshipRound->feedback());
+            } else {
+                $this->validate($request, $this->championshipRound->rules(), $this->championshipRound->feedback());
             }
-    
-            return $championshipRound;
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'An error occurred while updating championshipRound.'], 500);
+
+            $championshipRound->update($request->all());
         }
+
+        return response()->json($championshipRound);
     }
     
     public function destroy($id)
