@@ -17,9 +17,9 @@ class CityController extends Controller
 
     public function index(Request $request)
     {
-        $cityRepository = new CityRepository($this->citie);
-
         try{
+            $cityRepository = new CityRepository($this->citie);
+
             if ($request->has('att_state')) {
                 $att_state = 'state:id,' .  $request->att_state;
                 $cityRepository->selectAttributesRelated($att_state);

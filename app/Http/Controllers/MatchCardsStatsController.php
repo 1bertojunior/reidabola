@@ -4,36 +4,55 @@ namespace App\Http\Controllers;
 
 use App\Models\MatchGoalStats;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use App\Repositories\MatchGoalStatsRepository;
 
-class MatchGoalStatssController extends Controller
+class MatchGoalStatsController extends Controller
 {
-    private $MatchGoalStats;
+    private $matchGoalStats;
 
-    public function __construct(MatchGoalStats $MatchGoalStats)
+    public function __construct(matchGoalStats $matchGoalStats)
     {
-        $this->MatchGoalStats = $MatchGoalStats;
+        $this->matchGoalStats = $matchGoalStats;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            $MatchGoalStats = $this->MatchGoalStats->all();
-            return $MatchGoalStats;
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to retrieve match cards stats'], 500);
+        try{
+            $matchGoalStatsRepository = new MatchGoalStatsRepository($this->matchGoalStats);
+
+            if ($request->has('att_soccer')) {
+                $att_soccer = 'soccer:id,' .  $request->att_soccer;
+                $matchGoalStatsRepository->selectAttributesRelated($att_soccer);
+            } else {
+                $matchGoalStatsRepository->selectAttributesRelated('soccer');
+            }
+
+            if ($request->has('filter')) {
+                $matchGoalStatsRepository->filter($request->filter);                
+            }
+
+            if($request->has('att')){
+                $matchGoalStatsRepository->selectAttributes($request->att);
+            }
+
+            $result  = $matchGoalStatsRepository->getResult();
+            return response()->json( $result, 200 );
+        }catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while processing the request.'], 500);
         }
     }
 
     public function show($id)
     {
         try {
-            $MatchGoalStats = $this->MatchGoalStats->find($id);
+            $matchGoalStats = $this->matchGoalStats->find($id);
 
-            if ($MatchGoalStats === null) {
+            if ($matchGoalStats === null) {
                 return response()->json(['error' => 'Match cards stat not found'], 404);
             }
 
-            return $MatchGoalStats;
+            return $matchGoalStats;
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to retrieve match cards stat'], 500);
         }
@@ -44,9 +63,9 @@ class MatchGoalStatssController extends Controller
         try {
             $data = $request->all();
 
-            $request->validate($this->MatchGoalStats->rules(), $this->MatchGoalStats->feedback());
+            $request->validate($this->matchGoalStats->rules(), $this->matchGoalStats->feedback());
 
-            $MatchGoalStats = new MatchGoalStats([
+            $matchGoalStats = new matchGoalStats([
                 'minute' => isset($data['minute']) ? $data['minute'] : null,
                 'card_yellow' => isset($data['card_yellow']) ? $data['card_yellow'] : false,
                 'card_red' => isset($data['card_red']) ? $data['card_red'] : false,
@@ -55,11 +74,11 @@ class MatchGoalStatssController extends Controller
                 'player_suffer_id' => isset($data['player_suffer_id']) ? $data['player_suffer_id'] : null,
             ]);
 
-            $MatchGoalStats->save();
+            $matchGoalStats->save();
 
             return response()->json([
                 'msg' => 'Match cards stat created successfully',
-                'match_cards_stat' => $MatchGoalStats
+                'match_cards_stat' => $matchGoalStats
             ], 201);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to create match cards stat'], 500);
@@ -69,9 +88,9 @@ class MatchGoalStatssController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $MatchGoalStats = $this->MatchGoalStats->find($id);
+            $matchGoalStats = $this->matchGoalStats->find($id);
 
-            if ($MatchGoalStats === null) {
+            if ($matchGoalStats === null) {
                 return response()->json(['error' => 'Match cards stat not found'], 404);
             }
 
@@ -79,22 +98,22 @@ class MatchGoalStatssController extends Controller
                 $requestData = $request->all();
 
                 $rules = array();
-                foreach ($MatchGoalStats->rules() as $input => $rule) {
+                foreach ($matchGoalStats->rules() as $input => $rule) {
                     if (array_key_exists($input, $requestData)) {
                         $rules[$input] = $rule;
                     }
                 }
 
-                $request->validate($rules, $MatchGoalStats->feedback());
+                $request->validate($rules, $matchGoalStats->feedback());
             } else {
-                $request->validate($MatchGoalStats->rules(), $MatchGoalStats->feedback());
+                $request->validate($matchGoalStats->rules(), $matchGoalStats->feedback());
             }
 
-            $MatchGoalStats->update($request->all());
+            $matchGoalStats->update($request->all());
 
             return response()->json([
                 'msg' => 'Match cards stat updated successfully',
-                'match_cards_stat' => $MatchGoalStats
+                'match_cards_stat' => $matchGoalStats
             ], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to update match cards stat'], 500);
@@ -104,13 +123,13 @@ class MatchGoalStatssController extends Controller
     public function destroy($id)
     {
         try {
-            $MatchGoalStats = $this->MatchGoalStats->find($id);
+            $matchGoalStats = $this->matchGoalStats->find($id);
 
-            if ($MatchGoalStats === null) {
+            if ($matchGoalStats === null) {
                 return response()->json(['error' => 'Match cards stat not found'], 404);
             }
 
-            $MatchGoalStats->delete();
+            $matchGoalStats->delete();
 
             return response()->json(['msg' => 'Match cards stat deleted successfully'], 200);
         } catch (\Exception $e) {

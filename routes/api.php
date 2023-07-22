@@ -68,7 +68,7 @@ Route::prefix('v1')->group(function () {
         Route::get('soccerMatch/{id}', 'App\Http\Controllers\SoccerMatchController@show');        
 
         Route::get('matchLineup', 'App\Http\Controllers\MatchLineupController@index');
-        Route::get('matchLineup/{id}', 'App\Http\Controllers\MatchLineupController@show');        
+        Route::get('matchLineup/{id}', 'App\Http\Controllers\MatchLineupController@show'); 
 
         Route::get('substitution', 'App\Http\Controllers\SubstitutionController@index');
         Route::get('substitution/{id}', 'App\Http\Controllers\SubstitutionController@show');        
@@ -84,6 +84,12 @@ Route::prefix('v1')->group(function () {
         Route::post('teamGameEdition/{id}', 'App\Http\Controllers\TeamGameEditionController@update');
 
         Route::apiResource('matchGameLineup', 'App\Http\Controllers\MatchGameLineupController');
+
+
+        
+
+        Route::get('matchGoalStats', 'App\Http\Controllers\MatchGoalStatsController@index');
+        Route::get('matchGoalStats/{id}', 'App\Http\Controllers\MatchGoalStatsController@show'); 
 
         // ROUTES ADMIN
         Route::middleware(['access.level:1'])->group(function () {
@@ -155,6 +161,14 @@ Route::prefix('v1')->group(function () {
             Route::delete('teamGame/{id}', 'App\Http\Controllers\TeamGameController@destroy');
 
             Route::delete('teamGameEdition/{id}', 'App\Http\Controllers\TeamGameEditionController@destroy');
+
+
+
+
+
+            Route::post('matchGoalStats', 'App\Http\Controllers\MatchGoalStatsController@store');
+            Route::post('matchGoalStats/{id}', 'App\Http\Controllers\MatchGoalStatsController@update');
+            Route::delete('matchGoalStats/{id}', 'App\Http\Controllers\MatchGoalStatsController@destroy');
 
         });
 
