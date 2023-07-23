@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\PlayerGameScore;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use App\Repositories\PlayerGameScoreRepository;
 
 class PlayerGameScoreController extends Controller
 {
@@ -14,13 +16,23 @@ class PlayerGameScoreController extends Controller
         $this->playerGameScore = $playerGameScore;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            $playerGameScores = $this->playerGameScore->all();
-            return $playerGameScores;
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to retrieve player game scores'], 500);
+        try{
+            $playerGameScoreRepository = new PlayerGameScoreRepository($this->playerGameScore);
+
+            if ($request->has('filter')) {
+                $playerGameScoreRepository->filter($request->filter);                
+            }
+
+            if($request->has('att')){
+                $playerGameScoreRepository->selectAttributes($request->att);
+            }
+
+            $result  = $playerGameScoreRepository->getResult();
+            return response()->json( $result, 200 );
+        }catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while processing the request.'], 500);
         }
     }
 

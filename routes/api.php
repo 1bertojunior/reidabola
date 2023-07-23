@@ -95,6 +95,9 @@ Route::prefix('v1')->group(function () {
         Route::get('playerGameScoreChampionshipEdition', 'App\Http\Controllers\PlayerGameScoreChampionshipEditionController@index');
         Route::get('playerGameScoreChampionshipEdition/{id}', 'App\Http\Controllers\PlayerGameScoreChampionshipEditionController@show');
 
+        Route::get('playerGameScore', 'App\Http\Controllers\PlayerGameScoreController@index');
+        Route::get('playerGameScore/{id}', 'App\Http\Controllers\PlayerGameScoreController@show');
+
         // ROUTES ADMIN
         Route::middleware(['access.level:1'])->group(function () {
             // Rotas acessíveis apenas para usuários com nível de acesso 1
@@ -180,6 +183,10 @@ Route::prefix('v1')->group(function () {
             Route::post('playerGameScoreChampionshipEdition', 'App\Http\Controllers\PlayerGameScoreChampionshipEditionController@store');
             Route::post('playerGameScoreChampionshipEdition/{id}', 'App\Http\Controllers\PlayerGameScoreChampionshipEditionController@update');
             Route::delete('playerGameScoreChampionshipEdition/{id}', 'App\Http\Controllers\PlayerGameScoreChampionshipEditionController@destroy');
+
+            Route::post('playerGameScore', 'App\Http\Controllers\PlayerGameScoreController@store');
+            Route::post('playerGameScore/{id}', 'App\Http\Controllers\PlayerGameScoreController@update');
+            Route::delete('playerGameScore/{id}', 'App\Http\Controllers\PlayerGameScoreController@destroy');
 
         });
 
