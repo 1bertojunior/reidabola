@@ -19,40 +19,19 @@ class MatchLineupController extends Controller
 
     public function index(Request $request)
     {
-        // try {
-        //     $lineups = $this->matchLineup
-        //         ->with([
-        //             'playerEdition.player',
-        //             'playerEdition.player.position',
-        //             'playerEdition.teamEdition',
-        //             'playerEdition.teamEdition.team',
-        //             'soccerMatch',
-        //             'soccerMatch.team1Edition.team',
-        //             'soccerMatch.team2Edition.team',
-        //             'statusLineup'
-        //         ])->get();
-        //     return $lineups;
-        // } catch (\Exception $e) {
-        //     return response()->json(['error' => 'Failed to retrieve match lineups'], 500);
-        // }
-        // try{
+        try{
             $matchLineupRepository = new MatchLineupRepository($this->matchLineup);
 
-            // if ($request->has('att_state')) {
-            //     $att_state = 'state:id,' .  $request->att_state;
-            //     $matchLineupRepository->selectAttributesRelated($att_state);
-            // } else {
-                $matchLineupRepository
-                    ->selectAttributesRelated([
-                        'playerEdition.player.position',
-                        'playerEdition.teamEdition.team',
-                        'soccerMatch.team1Edition.team',
-                        'soccerMatch.team2Edition.team',
-                        'soccerMatch.championshipEdition.championship',
-                        'soccerMatch.championshipRound',
-                        'statusLineup',
-                    ]);
-            // }
+            $matchLineupRepository
+                ->selectAttributesRelated([
+                    'playerEdition.player.position',
+                    'playerEdition.teamEdition.team',
+                    'soccerMatch.team1Edition.team',
+                    'soccerMatch.team2Edition.team',
+                    'soccerMatch.championshipEdition.championship',
+                    'soccerMatch.championshipRound',
+                    'statusLineup',
+            ]);
 
             if ($request->has('filter')) {
                 $matchLineupRepository->filter($request->filter);                
@@ -64,9 +43,9 @@ class MatchLineupController extends Controller
 
             $result  = $matchLineupRepository->getResult();
             return response()->json( $result, 200 );
-        // }catch (\Exception $e) {
-            // return response()->json(['error' => 'An error occurred while processing the request.'], 500);
-        // }
+        }catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while processing the request.'], 500);
+        }
     }
 
     public function show($id)
