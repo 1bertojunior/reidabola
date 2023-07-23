@@ -28,6 +28,11 @@ class ChampionshipEdition extends Model
         return $this->belongsTo(Championship::class);
     }
 
+    public function city()
+    {
+        return $this->belongsTo(City::class);
+    }
+
     public static function rules()
     {
         return [

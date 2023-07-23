@@ -25,7 +25,11 @@ class ChampionshipEditionController extends Controller
                 $att_championship = 'championship:id,' . $request->att_championship;
                 $championshipEditionRepository->selectAttributesRelated($att_championship);
             } else {
-                $championshipEditionRepository->selectAttributesRelated('championship');
+                $championshipEditionRepository
+                    ->selectAttributesRelated([
+                        'championship',
+                        'city'
+                    ]);
             }
 
             if ($request->has('filter')) {
@@ -46,7 +50,11 @@ class ChampionshipEditionController extends Controller
     public function show($id)
     {
         try {
-            $championshipEdition = $this->championshipEdition->with('championship')->find($id);
+            $championshipEdition = $this->championshipEdition
+                ->with([
+                    'championship',
+                    'city'
+                ])->find($id);
 
             if ($championshipEdition === null) {
                 return response()->json(['error' => 'Championship edition not found.'], 404);
