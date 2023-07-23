@@ -48,6 +48,7 @@ class MatchLineupController extends Controller
                         'playerEdition.teamEdition.team',
                         'soccerMatch.team1Edition.team',
                         'soccerMatch.team2Edition.team',
+                        'soccerMatch.championshipEdition.championship',
                         'soccerMatch.championshipRound',
                         'statusLineup',
                     ]);
