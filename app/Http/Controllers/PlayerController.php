@@ -41,7 +41,22 @@ class PlayerController extends Controller
             return response()->json(['error' => 'An error occurred while processing the request.'], 500);
         }
     }
-    
+
+    public function show($id)
+    {
+        try {
+            $player = $this->player
+                ->with([
+                    'position',
+                    'city'
+                ])->findOrFail($id);
+                
+            return response()->json($player, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Not found.'], 404);
+        }
+    }
+
     public function store(Request $request)
     {
         try {
@@ -53,31 +68,42 @@ class PlayerController extends Controller
         } catch (ValidationException $e) {
             return response()->json(['error' => $e->errors()], 400);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Erro ao criar o jogador.'], 500);
+            return response()->json(['error' => 'Error creating player.'], 500);
         }
-    }
-
-    public function show($id)
-    {
-        $player = Player::findOrFail($id);
-        
-        return response()->json($player);
     }
 
     public function update(Request $request, $id)
     {
         try {
-            $player = Player::findOrFail($id);
+            $player = $this->player->find($id);
 
-            $this->validate($request, Player::rules(), Player::feedback());
+            if ($player === null) {
+                return response()->json(['error' => 'Not found'], 404);
+            }
+
+            if ($request->method() === "PATCH") {
+                $requestData = $request->all();
+
+                $rules = array();
+                foreach ($player->rules() as $input => $rule) {
+                    if (array_key_exists($input, $requestData)) {
+                        $rules[$input] = $rule;
+                    }
+                }
+
+                $request->validate($rules, $player->feedback());
+            } else {
+                $request->validate($player->rules(), $player->feedback());
+            }
 
             $player->update($request->all());
 
-            return response()->json($player);
-        } catch (ValidationException $e) {
-            return response()->json(['error' => $e->errors()], 400);
+            return response()->json([
+                'msg' => 'Updated successfully',
+                'citie' => $player
+            ], 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Erro ao atualizar o jogador.'], 500);
+            return response()->json(['error' => 'Failed to update'], 500);
         }
     }
 
@@ -88,9 +114,9 @@ class PlayerController extends Controller
             
             $player->delete();
 
-            return response()->json(['message' => 'Jogador removido com sucesso.']);
+            return response()->json(['message' => 'Player removed successfully.']);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Erro ao remover o jogador.'], 500);
+            return response()->json(['error' => 'Error removing palyer.'], 500);
         }
     }
 }
