@@ -90,7 +90,10 @@ Route::prefix('v1')->group(function () {
         Route::get('matchCardsStats/{id}', 'App\Http\Controllers\MatchCardsStatsController@show');
 
         Route::get('matchGoalStats', 'App\Http\Controllers\MatchGoalStatsController@index');
-        Route::get('matchGoalStats/{id}', 'App\Http\Controllers\MatchGoalStatsController@show'); 
+        Route::get('matchGoalStats/{id}', 'App\Http\Controllers\MatchGoalStatsController@show');
+        
+        Route::get('playerGameScoreChampionshipEdition', 'App\Http\Controllers\PlayerGameScoreChampionshipEditionController@index');
+        Route::get('playerGameScoreChampionshipEdition/{id}', 'App\Http\Controllers\PlayerGameScoreChampionshipEditionController@show');
 
         // ROUTES ADMIN
         Route::middleware(['access.level:1'])->group(function () {
@@ -173,6 +176,10 @@ Route::prefix('v1')->group(function () {
             Route::post('matchGoalStats', 'App\Http\Controllers\MatchGoalStatsController@store');
             Route::post('matchGoalStats/{id}', 'App\Http\Controllers\MatchGoalStatsController@update');
             Route::delete('matchGoalStats/{id}', 'App\Http\Controllers\MatchGoalStatsController@destroy');
+
+            Route::post('playerGameScoreChampionshipEdition', 'App\Http\Controllers\PlayerGameScoreChampionshipEditionController@store');
+            Route::post('playerGameScoreChampionshipEdition/{id}', 'App\Http\Controllers\PlayerGameScoreChampionshipEditionController@update');
+            Route::delete('playerGameScoreChampionshipEdition/{id}', 'App\Http\Controllers\PlayerGameScoreChampionshipEditionController@destroy');
 
         });
 

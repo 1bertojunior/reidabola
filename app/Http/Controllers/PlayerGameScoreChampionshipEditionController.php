@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\PlayerGameScoreChampionshipEdition;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use App\Repositories\PlayerGameScoreChampionshipEditionRepository;
 
 class PlayerGameScoreChampionshipEditionController extends Controller
 {
@@ -14,20 +16,34 @@ class PlayerGameScoreChampionshipEditionController extends Controller
         $this->playerGameScoreChampionshipEdition = $playerGameScoreChampionshipEdition;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            $playerGameScoreChampionshipEditions = $this->playerGameScoreChampionshipEdition->all();
-            return $playerGameScoreChampionshipEditions;
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to retrieve player game score championship editions'], 500);
+        try{
+            $playerGameScoreChampionshipEditionController = new PlayerGameScoreChampionshipEditionRepository($this->playerGameScoreChampionshipEdition);
+
+            // $playerGameScoreChampionshipEditionController
+                // ->selectAttributesRelated('','','');
+            
+            if ($request->has('filter')) {
+                $playerGameScoreChampionshipEditionController->filter($request->filter);                
+            }
+
+            if($request->has('att')){
+                $playerGameScoreChampionshipEditionController->selectAttributes($request->att);
+            }
+
+            $result  = $playerGameScoreChampionshipEditionController->getResult();
+            return response()->json( $result, 200 );
+        }catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while processing the request.'], 500);
         }
     }
 
     public function show($id)
     {
         try {
-            $playerGameScoreChampionshipEdition = $this->playerGameScoreChampionshipEdition->find($id);
+            $playerGameScoreChampionshipEdition = $this->playerGameScoreChampionshipEdition
+                ->find($id);
 
             if ($playerGameScoreChampionshipEdition === null) {
                 return response()->json(['error' => 'Player game score championship edition not found'], 404);
@@ -42,24 +58,15 @@ class PlayerGameScoreChampionshipEditionController extends Controller
     public function store(Request $request)
     {
         try {
-            $data = $request->all();
+            $this->validate($request, $this->playerGameScoreChampionshipEdition->rules(), $this->playerGameScoreChampionshipEdition->feedback());
 
-            $request->validate($this->playerGameScoreChampionshipEdition->rules(), $this->playerGameScoreChampionshipEdition->feedback());
+            $playerGameScoreChampionshipEdition = $this->playerGameScoreChampionshipEdition->create($request->all());
 
-            $playerGameScoreChampionshipEdition = new PlayerGameScoreChampionshipEdition([
-                'score' => $data['score'],
-                'player_game_score_id' => $data['player_game_score_id'],
-                'championship_edition_id' => $data['championship_edition_id'],
-            ]);
-
-            $playerGameScoreChampionshipEdition->save();
-
-            return response()->json([
-                'msg' => 'Player game score championship edition created successfully',
-                'player_game_score_championship_edition' => $playerGameScoreChampionshipEdition
-            ], 201);
+            return response()->json($playerGameScoreChampionshipEdition, 201);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 400);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to create player game score championship edition'], 500);
+            return response()->json(['error' => 'Error creating.'], 500);
         }
     }
 
