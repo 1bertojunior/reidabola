@@ -40,7 +40,6 @@ class CityController extends Controller
         }catch (\Exception $e) {
             return response()->json(['error' => 'An error occurred while processing the request.'], 500);
         }
-
     }
 
     public function show($id)

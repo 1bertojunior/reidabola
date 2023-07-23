@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PlayerEdition;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use App\Models\PlayerEdition;
+use App\Repositories\PlayerEditionRepository;
 
 class PlayerEditionController extends Controller
 {
@@ -15,25 +16,40 @@ class PlayerEditionController extends Controller
         $this->playerEdition = $playerEdition;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            $playerEditions = PlayerEdition::with('player.position', 'teamEdition.team')->get();
+        try{
+            $playerEditionRepository = new PlayerEditionRepository($this->playerEdition);
+            
+            $playerEditionRepository
+                ->selectAttributesRelated([
+                    'player.position', 
+                    'teamEdition.team'
+                ]);
 
-            return response()->json($playerEditions, 200);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Erro ao buscar as edições de jogador.'], 500);
+            if ($request->has('filter')) {
+                $playerEditionRepository->filter($request->filter);                
+            }
+
+            if($request->has('att')){
+                $playerEditionRepository->selectAttributes($request->att);
+            }
+
+            $result  = $playerEditionRepository->getResult();
+            return response()->json( $result, 200 );
+        }catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while processing the request.'], 500);
         }
     }
 
     public function show($id)
     {
         try {
-            $playerEdition = PlayerEdition::with('player.position', 'teamEdition.team')->findOrFail($id);
+            $playerEdition = $this->playerEdition->with('player.position', 'teamEdition.team')->findOrFail($id);
 
             return response()->json($playerEdition, 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Edição de jogador não encontrada.'], 404);
+            return response()->json(['error' => 'Player edition not found.'], 404);
         }
     }
 
@@ -48,7 +64,7 @@ class PlayerEditionController extends Controller
         } catch (ValidationException $e) {
             return response()->json(['error' => $e->errors()], 400);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Erro ao criar edição de jogador.'], 500);
+            return response()->json(['error' => 'Error created player edition.'], 500);
         }
     }
 
@@ -89,9 +105,9 @@ class PlayerEditionController extends Controller
 
             $playerEdition->delete();
 
-            return response()->json(['message' => 'Edição de jogador removida com sucesso.']);
+            return response()->json(['message' => 'Player edition removed success.']);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Erro ao remover edição de jogador.'], 500);
+            return response()->json(['error' => 'Error removing player edition'], 500);
         }
     }
 }
