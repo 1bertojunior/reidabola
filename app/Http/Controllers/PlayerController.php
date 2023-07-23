@@ -5,14 +5,41 @@ namespace App\Http\Controllers;
 use App\Models\Player;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use App\Repositories\PlayerRepository;
 
 class PlayerController extends Controller
 {
-    public function index()
-    {
-        $players = Player::all();
 
-        return response()->json($players);
+    protected $player;
+
+    public function __construct(Player $player){
+        $this->player = $player;
+    }
+
+    public function index(Request $request)
+    {
+        try{
+            $playerRepository = new PlayerRepository($this->player);
+
+            $playerRepository
+                ->selectAttributesRelated([
+                    'position',
+                    'city'
+                ]);
+
+            if ($request->has('filter')) {
+                $playerRepository->filter($request->filter);                
+            }
+
+            if($request->has('att')){
+                $playerRepository->selectAttributes($request->att);
+            }
+
+            $result  = $playerRepository->getResult();
+            return response()->json( $result, 200 );
+        }catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while processing the request.'], 500);
+        }
     }
     
     public function store(Request $request)
