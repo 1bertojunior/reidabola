@@ -28,7 +28,7 @@ class ChampionshipEditionController extends Controller
                 $championshipEditionRepository
                     ->selectAttributesRelated([
                         'championship',
-                        'city'
+                        'championship.city'
                     ]);
             }
 
@@ -53,7 +53,7 @@ class ChampionshipEditionController extends Controller
             $championshipEdition = $this->championshipEdition
                 ->with([
                     'championship',
-                    'city'
+                    'championship.city'
                 ])->find($id);
 
             if ($championshipEdition === null) {
