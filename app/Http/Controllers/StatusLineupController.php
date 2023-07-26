@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use App\Models\StatusLineup;
+use App\Repositories\StatusLineupRepository;
+
 
 class StatusLineupController extends Controller
 {
@@ -15,14 +17,23 @@ class StatusLineupController extends Controller
         $this->statusLineup = $statusLineup;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            $statusLineups = $this->statusLineup->all();
+        try{
+            $statusLineupRepository = new StatusLineupRepository($this->statusLineup);
 
-            return response()->json($statusLineups);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Erro ao obter os status do lineup.'], 500);
+            if ($request->has('filter')) {
+                $statusLineupRepository->filter($request->filter);                
+            }
+
+            if($request->has('att')){
+                $statusLineupRepository->selectAttributes($request->att);
+            }
+
+            $result  = $statusLineupRepository->getResult();
+            return response()->json( $result, 200 );
+        }catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while processing the request.'], 500);
         }
     }
 
@@ -55,17 +66,35 @@ class StatusLineupController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $statusLineup = $this->statusLineup->findOrFail($id);
+            $statusLineup = $this->statusLineup->find($id);
 
-            $this->validate($request, $statusLineup->rules($id), $statusLineup->feedback());
+            if ($statusLineup === null) {
+                return response()->json(['error' => 'Not found'], 404);
+            }
+
+            if ($request->method() === "PATCH") {
+                $requestData = $request->all();
+
+                $rules = array();
+                foreach ($statusLineup->rules() as $input => $rule) {
+                    if (array_key_exists($input, $requestData)) {
+                        $rules[$input] = $rule;
+                    }
+                }
+
+                $request->validate($rules, $statusLineup->feedback());
+            } else {
+                $request->validate($statusLineup->rules(), $statusLineup->feedback());
+            }
 
             $statusLineup->update($request->all());
 
-            return response()->json($statusLineup);
-        } catch (ValidationException $e) {
-            return response()->json(['error' => $e->errors()], 400);
+            return response()->json([
+                'msg' => 'Updated successfully',
+                'statusLineup' => $statusLineup
+            ], 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Erro ao atualizar o status do lineup.'], 500);
+            return response()->json(['error' => 'Failed to update'], 500);
         }
     }
 
