@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\State;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use App\Repositories\StateRepository;
 
 class StateController extends Controller
 {
@@ -13,117 +15,95 @@ class StateController extends Controller
     public function __construct(State $state){
         $this->state = $state;
     }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $states = $this->state->all();
-        return $states;
+        try{
+            $cityRepository = new StateRepository($this->state);
+
+            if ($request->has('filter')) {
+                $cityRepository->filter($request->filter);                
+            }
+
+            if($request->has('att')){
+                $cityRepository->selectAttributes($request->att);
+            }
+
+            $result  = $cityRepository->getResult();
+            return response()->json( $result, 200 );
+        }catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while processing the request.'], 500);
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $data = $request->all();
-
-        $request->validate($this->state->rules(), $this->state->feedback());
-        
-        $state = $this->state->create($data);
-        return $state;
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\State  $state
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
-        $result = $this->state->find($id);
-        if( $result === null) $result = response()->json([ 'error' => "Nenhum dado encontrado."], 404);
-        return $result;
+        try {
+            $state = $this->state->with('state')->findOrFail($id);
+            return response()->json($state, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Not found.'], 404);
+        }
+        
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\State  $state
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(State $state)
+    public function store(Request $request)
     {
-        //
+        try {
+            $this->validate($request, $this->state->rules(), $this->state->feedback());
+
+            $state = $this->state->create($request->all());
+
+            return response()->json($state, 201);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 400);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error creating.'], 500);
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\State  $state
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
-        $state = $this->state->find($id);
+        try {
+            $state = $this->state->find($id);
 
-        if ($state === null) {
-            return response()->json(['error' => "Nenhum dado encontrado."], 404);
-        } else {
+            if ($state === null) {
+                return response()->json(['error' => 'Not found'], 404);
+            }
+
             if ($request->method() === "PATCH") {
                 $requestData = $request->all();
 
                 $rules = array();
-                foreach ($this->state->rules($id) as $input => $rule) {
+                foreach ($state->rules() as $input => $rule) {
                     if (array_key_exists($input, $requestData)) {
                         $rules[$input] = $rule;
                     }
                 }
 
-                $this->validate($request, $rules, $this->state->feedback());
+                $request->validate($rules, $state->feedback());
             } else {
-                $this->validate($request, $this->state->rules($id), $this->state->feedback());
+                $request->validate($state->rules(), $state->feedback());
             }
 
             $state->update($request->all());
-        }
 
-        return $state;
+            return response()->json([
+                'msg' => 'Updated successfully',
+                'state' => $state
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to update'], 500);
+        }
     }
 
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  Integer;
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-
-        $result = $this->state->find($id);
-
-        $result = ($result === null) ? 0 : $result->delete();
-
-        return $result ? ['msg' => "Removido com sucesso"] :  response()->json([ 'error' => "Nenhum dado encontrado"], 404); ;
+        try {
+            $result = $this->state->find($id);
+            $result = ($result === null) ? 0 : $result->delete();
+            return $result ? response()->json(['message' => 'Successfully removed.'], 200) : response()->json(['error' => 'No data found.'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while removing.'], 500);
+        }
     }
 }
