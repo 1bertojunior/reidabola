@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use App\Models\TeamEdition;
+use App\Repositories\TeamEditionRepository;
 
 class TeamEditionController extends Controller
 {
@@ -15,26 +16,47 @@ class TeamEditionController extends Controller
         $this->teamEdition = $teamEdition;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            $teamEditions = TeamEdition::with('team', 'championshipEdition.championship', 'coach')->get();
+        try{
+            $teamEditionRepository = new TeamEditionRepository($this->teamEdition);
 
-            return response()->json($teamEditions, 200);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Erro ao buscar as edições de equipe.'], 500);
+            $teamEditionRepository
+                ->selectAttributesRelated([
+                    'team',
+                    'championshipEdition.championship',
+                    'coach'
+                ]);
+
+            if ($request->has('filter')) {
+                $teamEditionRepository->filter($request->filter);                
+            }
+
+            if($request->has('att')){
+                $teamEditionRepository->selectAttributes($request->att);
+            }
+
+            $result  = $teamEditionRepository->getResult();
+            return response()->json( $result, 200 );
+        }catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while processing the request.'], 500);
         }
     }
 
     public function show($id)
     {
         try {
-            $teamEdition = TeamEdition::with('team', 'championshipEdition.championship', 'coach')->findOrFail($id);
-
+            $teamEdition = $this->teamEdition
+                ->with([
+                    'team',
+                    'championshipEdition.championship',
+                    'coach'
+                ])->findOrFail($id);
             return response()->json($teamEdition, 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Edição de equipe não encontrada.'], 404);
+            return response()->json(['error' => 'Not found.'], 404);
         }
+        
     }
 
     public function store(Request $request)
@@ -55,17 +77,32 @@ class TeamEditionController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $teamEdition = $this->teamEdition->findOrFail($id);
+            $teamEdition = $this->teamEdition->find($id);
 
-            $this->validate($request, $this->teamEdition->rules(), $this->teamEdition->feedback());
+            if ($teamEdition === null) {
+                return response()->json(['error' => 'Not found'], 404);
+            }
+
+            if ($request->method() === "PATCH") {
+                $requestData = $request->all();
+
+                $rules = array();
+                foreach ($teamEdition->rules() as $input => $rule) {
+                    if (array_key_exists($input, $requestData)) {
+                        $rules[$input] = $rule;
+                    }
+                }
+
+                $request->validate($rules, $teamEdition->feedback());
+            } else {
+                $request->validate($teamEdition->rules(), $teamEdition->feedback());
+            }
 
             $teamEdition->update($request->all());
 
-            return response()->json($teamEdition);
-        } catch (ValidationException $e) {
-            return response()->json(['error' => $e->errors()], 400);
+            return response()->json($teamEdition, 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Error updating team edition.'], 500);
+            return response()->json(['error' => 'Failed to update'], 500);
         }
     }
 
