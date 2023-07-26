@@ -17,16 +17,6 @@ class SoccerMatchController extends Controller
         $this->soccerMatch = $soccerMatch;
     }
 
-    // public function index()
-    // {
-    //     try {
-    //         $matches = $this->soccerMatch->with(['team1Edition.team', 'team2Edition.team', 'championshipEdition', 'stadiumFootball', 'championshipRound'])->get();
-    //         return $matches;
-    //     } catch (\Exception $e) {
-    //         return response()->json(['error' => 'Failed to retrieve soccer matches'], 500);
-    //     }
-    // }
-
     public function index(Request $request)
     {
         try{
@@ -71,15 +61,21 @@ class SoccerMatchController extends Controller
             ->orderByRaw("ABS(TIMESTAMPDIFF(SECOND, date_time, '{$date}'))")
             ->with('championshipRound')
             ->first();
-        // echo $date;
-        
+
         return response()->json( $result, 200 );
     }
 
     public function show($id)
     {
         try {
-            $match = $this->soccerMatch->with(['team1Edition.team', 'team2Edition.team', 'championshipEdition', 'stadiumFootball', 'championshipRound'])->find($id);
+            $match = $this->soccerMatch
+                ->with([
+                    'team1Edition.team',
+                    'team2Edition.team',
+                    'championshipEdition',
+                    'stadiumFootball',
+                    'championshipRound'
+                ])->find($id);
 
             if ($match === null) {
                 return response()->json(['error' => 'Soccer match not found'], 404);
