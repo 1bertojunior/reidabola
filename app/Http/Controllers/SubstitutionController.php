@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Substitution;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use App\Repositories\SubstitutionRepository;
 
 class SubstitutionController extends Controller
 {
@@ -14,13 +16,23 @@ class SubstitutionController extends Controller
         $this->substitution = $substitution;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            $substitutions = $this->substitution->all();
-            return $substitutions;
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to retrieve substitutions'], 500);
+        try{
+            $substitutionRepository = new SubstitutionRepository($this->substitution);
+
+            if ($request->has('filter')) {
+                $substitutionRepository->filter($request->filter);                
+            }
+
+            if($request->has('att')){
+                $substitutionRepository->selectAttributes($request->att);
+            }
+
+            $result  = $substitutionRepository->getResult();
+            return response()->json( $result, 200 );
+        }catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while processing the request.'], 500);
         }
     }
 
@@ -42,24 +54,15 @@ class SubstitutionController extends Controller
     public function store(Request $request)
     {
         try {
-            $data = $request->all();
+            $this->validate($request, $this->substitution->rules(), $this->substitution->feedback());
 
-            $substitution = new Substitution([
-                'minute' => isset($data['minute']) ? $data['minute'] : null,
-                'soccer_match_id' => isset($data['soccer_match_id']) ? $data['soccer_match_id'] : null,
-                'team_edition_id' => isset($data['team_edition_id']) ? $data['team_edition_id'] : null,
-                'player_in_id' => isset($data['player_in_id']) ? $data['player_in_id'] : null,
-                'player_out_id' => isset($data['player_out_id']) ? $data['player_out_id'] : null,
-            ]);
+            $substitution = $this->substitution->create($request->all());
 
-            $substitution->save();
-
-            return response()->json([
-                'msg' => 'Substitution created successfully',
-                'substitution' => $substitution
-            ], 201);
+            return response()->json($substitution, 201);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 400);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to create substitution'], 500);
+            return response()->json(['error' => 'Error creating.'], 500);
         }
     }
 
