@@ -39,28 +39,28 @@ class SoccerMatchSeeder extends Seeder
     //                 // Dados das partidas
     //                 $matches = [
     //                     // 1ª Rodada
-    //                     ['date' => '2022-10-16', 'time' => '16:00', 'team1' => 'Vila Real', 'team2' => 'Russim'],
-    //                     ['date' => '2022-10-16', 'time' => '18:00', 'team1' => 'Corinthians', 'team2' => 'Carqueijo'],
+    //                     ['date' => '2023-10-16', 'time' => '16:00', 'team1' => 'Vila Real', 'team2' => 'Russim'],
+    //                     ['date' => '2023-10-16', 'time' => '18:00', 'team1' => 'Corinthians', 'team2' => 'Carqueijo'],
                         // // 2ª Rodada
-                        // ['date' => '2022-10-23', 'time' => '16:00', 'team1' => 'TDS', 'team2' => 'Palmeiras'],
-                        // ['date' => '2022-10-23', 'time' => '18:00', 'team1' => 'Russim', 'team2' => 'Corinthians'],
+                        // ['date' => '2023-10-23', 'time' => '16:00', 'team1' => 'TDS', 'team2' => 'Palmeiras'],
+                        // ['date' => '2023-10-23', 'time' => '18:00', 'team1' => 'Russim', 'team2' => 'Corinthians'],
                         // // 3ª Rodada
-                        // ['date' => '2022-11-06', 'time' => '16:00', 'team1' => 'Vila Real', 'team2' => 'Carqueijo'],
-                        // ['date' => '2022-11-06', 'time' => '18:00', 'team1' => 'TDS', 'team2' => 'Russim'],
+                        // ['date' => '2023-11-06', 'time' => '16:00', 'team1' => 'Vila Real', 'team2' => 'Carqueijo'],
+                        // ['date' => '2023-11-06', 'time' => '18:00', 'team1' => 'TDS', 'team2' => 'Russim'],
                         // // 4ª Rodada
-                        // ['date' => '2022-11-13', 'time' => '16:00', 'team1' => 'Palmeiras', 'team2' => 'Carqueijo'],
-                        // ['date' => '2022-11-13', 'time' => '18:00', 'team1' => 'Vila Real', 'team2' => 'Corinthians'],
+                        // ['date' => '2023-11-13', 'time' => '16:00', 'team1' => 'Palmeiras', 'team2' => 'Carqueijo'],
+                        // ['date' => '2023-11-13', 'time' => '18:00', 'team1' => 'Vila Real', 'team2' => 'Corinthians'],
                         // // 5ª Rodada
-                        // ['date' => '2022-11-15', 'time' => '18:00', 'team1' => 'Palmeiras', 'team2' => 'Russim'],
+                        // ['date' => '2023-11-15', 'time' => '18:00', 'team1' => 'Palmeiras', 'team2' => 'Russim'],
                         // // 6ª Rodada
-                        // ['date' => '2022-11-20', 'time' => '16:00', 'team1' => 'TDS', 'team2' => 'Carqueijo'],
-                        // ['date' => '2022-11-20', 'time' => '18:00', 'team1' => 'Vila Real', 'team2' => 'Palmeiras'],
+                        // ['date' => '2023-11-20', 'time' => '16:00', 'team1' => 'TDS', 'team2' => 'Carqueijo'],
+                        // ['date' => '2023-11-20', 'time' => '18:00', 'team1' => 'Vila Real', 'team2' => 'Palmeiras'],
                         // // 7ª Rodada
-                        // ['date' => '2022-11-27', 'time' => '16:00', 'team1' => 'Russim', 'team2' => 'Carqueijo'],
-                        // ['date' => '2022-11-27', 'time' => '18:00', 'team1' => 'TDS', 'team2' => 'Corinthians'],
+                        // ['date' => '2023-11-27', 'time' => '16:00', 'team1' => 'Russim', 'team2' => 'Carqueijo'],
+                        // ['date' => '2023-11-27', 'time' => '18:00', 'team1' => 'TDS', 'team2' => 'Corinthians'],
                         // // 8ª Rodada
-                        // ['date' => '2022-12-04', 'time' => '16:00', 'team1' => 'Palmeiras', 'team2' => 'Corinthians'],
-                        // ['date' => '2022-12-04', 'time' => '18:00', 'team1' => 'Vila Real', 'team2' => 'TDS'],
+                        // ['date' => '2023-12-04', 'time' => '16:00', 'team1' => 'Palmeiras', 'team2' => 'Corinthians'],
+                        // ['date' => '2023-12-04', 'time' => '18:00', 'team1' => 'Vila Real', 'team2' => 'TDS'],
     //                 ];
 
     //                 // monte os soccer_match
@@ -114,28 +114,28 @@ class SoccerMatchSeeder extends Seeder
             if ($championshipEdition && $stadiumFootball) {
                 $matches = [
                     // 1ª Rodada
-                    ['date' => '2022-10-16', 'time' => '16:00', 'team1' => 'Villa Real', 'team2' => 'Russim', 'round' => 1],
-                    ['date' => '2022-10-16', 'time' => '18:00', 'team1' => 'Corinthians', 'team2' => 'Carquejo', 'round' => 1],
+                    ['date' => '2023-10-16', 'time' => '16:00', 'team1' => 'Villa Real', 'team2' => 'Russim', 'round' => 1],
+                    ['date' => '2023-10-16', 'time' => '18:00', 'team1' => 'Corinthians', 'team2' => 'Carquejo', 'round' => 1],
                     // 2ª Rodada
-                    ['date' => '2022-10-23', 'time' => '16:00', 'team1' => 'TDS', 'team2' => 'Palmeiras', 'round' => 2],
-                    ['date' => '2022-10-23', 'time' => '18:00', 'team1' => 'Russim', 'team2' => 'Corinthians', 'round' => 2],
+                    ['date' => '2023-10-23', 'time' => '16:00', 'team1' => 'TDS', 'team2' => 'Palmeiras', 'round' => 2],
+                    ['date' => '2023-10-23', 'time' => '18:00', 'team1' => 'Russim', 'team2' => 'Corinthians', 'round' => 2],
                     // 3ª Rodada
-                    ['date' => '2022-11-06', 'time' => '16:00', 'team1' => 'Villa Real', 'team2' => 'Carquejo', 'round' => 3],
-                    ['date' => '2022-11-06', 'time' => '18:00', 'team1' => 'TDS', 'team2' => 'Russim', 'round' => 3],
+                    ['date' => '2023-11-06', 'time' => '16:00', 'team1' => 'Villa Real', 'team2' => 'Carquejo', 'round' => 3],
+                    ['date' => '2023-11-06', 'time' => '18:00', 'team1' => 'TDS', 'team2' => 'Russim', 'round' => 3],
                     // 4ª Rodada
-                    ['date' => '2022-11-13', 'time' => '16:00', 'team1' => 'Palmeiras', 'team2' => 'Carquejo', 'round' => 4],
-                    ['date' => '2022-11-13', 'time' => '18:00', 'team1' => 'Villa Real', 'team2' => 'Corinthians', 'round' => 4],
+                    ['date' => '2023-11-13', 'time' => '16:00', 'team1' => 'Palmeiras', 'team2' => 'Carquejo', 'round' => 4],
+                    ['date' => '2023-11-13', 'time' => '18:00', 'team1' => 'Villa Real', 'team2' => 'Corinthians', 'round' => 4],
                     // 5ª Rodada
-                    ['date' => '2022-11-15', 'time' => '18:00', 'team1' => 'Palmeiras', 'team2' => 'Russim', 'round' => 5],
+                    ['date' => '2023-11-15', 'time' => '18:00', 'team1' => 'Palmeiras', 'team2' => 'Russim', 'round' => 5],
                     // 6ª Rodada
-                    ['date' => '2022-11-20', 'time' => '16:00', 'team1' => 'TDS', 'team2' => 'Carquejo', 'round' => 6],
-                    ['date' => '2022-11-20', 'time' => '18:00', 'team1' => 'Villa Real', 'team2' => 'Palmeiras', 'round' => 6],
+                    ['date' => '2023-11-20', 'time' => '16:00', 'team1' => 'TDS', 'team2' => 'Carquejo', 'round' => 6],
+                    ['date' => '2023-11-20', 'time' => '18:00', 'team1' => 'Villa Real', 'team2' => 'Palmeiras', 'round' => 6],
                     // 7ª Rodada
-                    ['date' => '2022-11-27', 'time' => '16:00', 'team1' => 'Russim', 'team2' => 'Carquejo', 'round' => 7],
-                    ['date' => '2022-11-27', 'time' => '18:00', 'team1' => 'TDS', 'team2' => 'Corinthians', 'round' => 7],
+                    ['date' => '2023-11-27', 'time' => '16:00', 'team1' => 'Russim', 'team2' => 'Carquejo', 'round' => 7],
+                    ['date' => '2023-11-27', 'time' => '18:00', 'team1' => 'TDS', 'team2' => 'Corinthians', 'round' => 7],
                     // 8ª Rodada
-                    ['date' => '2022-12-04', 'time' => '16:00', 'team1' => 'Palmeiras', 'team2' => 'Corinthians', 'round' => 8],
-                    ['date' => '2022-12-04', 'time' => '18:00', 'team1' => 'Villa Real', 'team2' => 'TDS', 'round' => 8],
+                    ['date' => '2023-12-04', 'time' => '16:00', 'team1' => 'Palmeiras', 'team2' => 'Corinthians', 'round' => 8],
+                    ['date' => '2023-12-04', 'time' => '18:00', 'team1' => 'Villa Real', 'team2' => 'TDS', 'round' => 8],
                 ];
                 
 
