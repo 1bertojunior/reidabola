@@ -117,4 +117,5 @@ class SubstitutionController extends Controller
             return response()->json(['error' => 'Failed to delete substitution'], 500);
         }
     }
+    
 }

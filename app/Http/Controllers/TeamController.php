@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use App\Models\Team;
+use App\Repositories\TeamRepository;
 
 class TeamController extends Controller
 {
@@ -15,14 +16,26 @@ class TeamController extends Controller
         $this->team = $team;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            $teams = $this->team->with('championship')->get();
+        try{
+            $teamRepository = new TeamRepository($this->team);
 
-            return response()->json($teams);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Erro ao obter as equipes.'], 500);
+    
+            $teamRepository->selectAttributesRelated('championship');
+
+            if ($request->has('filter')) {
+                $teamRepository->filter($request->filter);                
+            }
+
+            if($request->has('att')){
+                $teamRepository->selectAttributes($request->att);
+            }
+
+            $result  = $teamRepository->getResult();
+            return response()->json( $result, 200 );
+        }catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while processing the request.'], 500);
         }
     }
 
