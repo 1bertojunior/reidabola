@@ -46,23 +46,23 @@ class CreateAdminAccessLevelAndUser extends Migration
         $user->access_level_id = $accessLevelUser->id;
         $user->save();
 
-        $user1 = new User();
-        $user1->email = 'vitor1@reidaboa.1bertojunior.com';
-        $user1->password = Hash::make('123456789!A');
-        $user1->first_name = 'Vitor';
-        $user1->last_name = 'Santos';
-        $user1->nick = 'vitor_santos';
-        $user1->access_level_id = $accessLevelUser->id;
-        $user1->save();
+        // $user1 = new User();
+        // $user1->email = 'vitor1@reidaboa.1bertojunior.com';
+        // $user1->password = Hash::make('123456789!A');
+        // $user1->first_name = 'Vitor';
+        // $user1->last_name = 'Santos';
+        // $user1->nick = 'vitor_santos';
+        // $user1->access_level_id = $accessLevelUser->id;
+        // $user1->save();
 
-        $user2 = new User();
-        $user2->email = 'vitor2@reidaboa.1bertojunior.com';
-        $user2->password = Hash::make('123456789!A');
-        $user2->first_name = 'vitor';
-        $user2->last_name = 'santos';
-        $user2->nick = 'vitorsantos';
-        $user2->access_level_id = $accessLevelUser->id;
-        $user2->save();
+        // $user2 = new User();
+        // $user2->email = 'vitor2@reidaboa.1bertojunior.com';
+        // $user2->password = Hash::make('123456789!A');
+        // $user2->first_name = 'vitor';
+        // $user2->last_name = 'santos';
+        // $user2->nick = 'vitorsantos';
+        // $user2->access_level_id = $accessLevelUser->id;
+        // $user2->save();
     }
 
     /**

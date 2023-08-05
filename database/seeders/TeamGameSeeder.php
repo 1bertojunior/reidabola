@@ -3,16 +3,19 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\TeamGame;
+
 
 class TeamGameSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
+
     public function run()
     {
-        //
+        TeamGame::create([
+            'name' => 'Flamengo',
+            'abb' => 'FLA',
+            'user_id' => 3,
+        ]);
     }
+
 }

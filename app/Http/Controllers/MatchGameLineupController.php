@@ -22,12 +22,13 @@ class MatchGameLineupController extends Controller
         try{
             $matchGameLineupRepository = new MatchGameLineupRepository($this->matchGameLineup);
 
-            if ($request->has('att_soccer')) {
-                $att_soccer = 'soccer:id,' .  $request->att_soccer;
-                $matchGameLineupRepository->selectAttributesRelated($att_soccer);
-            } else {
-                $matchGameLineupRepository->selectAttributesRelated('soccer');
-            }
+            
+            $matchGameLineupRepository
+                ->selectAttributesRelated([
+                    'teamGameEdition',
+                    'playerLineup.playerEdition.player.position',
+                    'championshipRound'
+                ]);
 
             if ($request->has('filter')) {
                 $matchGameLineupRepository->filter($request->filter);                
@@ -64,14 +65,15 @@ class MatchGameLineupController extends Controller
     public function store(Request $request)
     {
         try {
-            $data = $request->all();
-            $matchGameLineup = $this->matchGameLineup->create($data);
-            return response()->json([
-                'msg' => 'Match game lineup created successfully',
-                'matchGameLineup' => $matchGameLineup
-            ], 201);
+            $this->validate($request, $this->matchGameLineup->rules(), $this->matchGameLineup->feedback());
+
+            $matchGameLineup = $this->matchGameLineup->create($request->all());
+
+            return response()->json($matchGameLineup, 201);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 400);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to create match game lineup'], 500);
+            return response()->json(['error' => 'Error creating.'], 500);
         }
     }
 

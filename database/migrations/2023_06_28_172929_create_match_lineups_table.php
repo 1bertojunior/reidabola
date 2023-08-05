@@ -27,11 +27,6 @@ class CreateMatchLineupsTable extends Migration
         
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::table('match_lineup', function (Blueprint $table) {
