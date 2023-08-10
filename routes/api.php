@@ -105,6 +105,9 @@ Route::prefix('v1')->group(function () {
         Route::get('teamGameEditionScore', 'App\Http\Controllers\TeamGameEditionScoreController@index');
         Route::get('teamGameEditionScore/{id}', 'App\Http\Controllers\TeamGameEditionScoreController@show');
 
+        Route::get('matchGameLineupScore', 'App\Http\Controllers\MatchGameLineupScoreController@index');
+        Route::get('matchGameLineupScore/{id}', 'App\Http\Controllers\MatchGameLineupScoreController@show');
+
 
 
 
