@@ -18,5 +18,6 @@ class TeamGameEditionSeeder extends Seeder
             'team_game_id' => 1,
             'championship_edition_id' => 1
         ]);
+        
     }
 }

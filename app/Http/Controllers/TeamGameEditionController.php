@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TeamGameEdition;
+use App\Models\TeamGameEditionScore;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use App\Repositories\TeamGameEditionRepository;
@@ -64,6 +65,12 @@ class TeamGameEditionController extends Controller
 
             $teamGameEdition = $this->teamGameEdition->create($request->all());
 
+            $teamGameEditionScore = new TeamGameEditionScore();
+            $teamGameEditionScore->score = 100;
+            $teamGameEditionScore->team_game_edition_id = $teamGameEdition->id;
+            $teamGameEditionScore->championship_round_id = 1;
+            $teamGameEditionScore->save();
+            
             return response()->json($teamGameEdition, 201);
         } catch (ValidationException $e) {
             return response()->json(['error' => $e->errors()], 400);
