@@ -99,6 +99,15 @@ Route::prefix('v1')->group(function () {
         Route::get('playerGameScore', 'App\Http\Controllers\PlayerGameScoreController@index');
         Route::get('playerGameScore/{id}', 'App\Http\Controllers\PlayerGameScoreController@show');
 
+
+
+
+        Route::get('teamGameEditionScore', 'App\Http\Controllers\TeamGameEditionScoreController@index');
+        Route::get('teamGameEditionScore/{id}', 'App\Http\Controllers\TeamGameEditionScoreController@show');
+
+
+
+
         // ROUTES ADMIN
         Route::middleware(['access.level:1'])->group(function () {
             // Rotas acessíveis apenas para usuários com nível de acesso 1
