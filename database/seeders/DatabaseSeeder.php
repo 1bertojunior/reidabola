@@ -44,6 +44,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MatchGameLineupSeeder::class);
 
         $this->call(TeamGameEditionScoreSeeder::class);
+        // $this->call(MatchGameLineupScoreSeeder::class);
 
     }
 }
