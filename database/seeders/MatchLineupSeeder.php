@@ -129,9 +129,9 @@ class MatchLineupSeeder extends Seeder
             
             $matchLineups[] = $matchLineup;
 
-            $matchLineupId = $matchLineup->id;
+            // $matchLineupId = $matchLineup->id;
 
-            $matchGameLineupScore = MatchGameLineupScore::where('match_game_lineup_id', $matchLineupId)->first();
+            // $matchGameLineupScore = MatchGameLineupScore::where('match_game_lineup_id', $matchLineupId)->first();
 
             // if($matchGameLineupScore === null){
             //     $newMatchGameLineupScore = MatchGameLineupScore::create([
@@ -141,7 +141,7 @@ class MatchLineupSeeder extends Seeder
             // }
 
             // echo $matchLineupId;
-            dd($matchGameLineupScore);
+            // dd($matchGameLineupScore);
             // echo "\n";
         }
 
