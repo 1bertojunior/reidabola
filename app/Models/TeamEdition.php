@@ -25,7 +25,7 @@ class TeamEdition extends Model
 
     public function coach()
     {
-        return $this->belongsTo(Coach::class);
+        return $this->belongsTo(Coach::class, 'coach_id');
     }
 
     public function rules()

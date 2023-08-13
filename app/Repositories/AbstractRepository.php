@@ -122,6 +122,25 @@
             return $this->model->get();
         }
 
+        public function joinRelated($table, $localKey, $foreignKey, array $withRelations = [])
+        {
+            $this->model = $this->model->join($table, $localKey, '=', $foreignKey)
+                ->select($this->model->getTable() . '.*', $table . '.*');
+        }
+
+        public function joinAndLoad($table, $localKey, $foreignKey, array $withRelations = [])
+        {
+            $this->model = $this->model->join($table, $localKey, '=', $foreignKey)
+                ->select($this->model->getTable() . '.*', $table . '.*')
+                ->with($withRelations);
+        }
+    
+        public function leftJoin($relatedTable, $localKey, $foreignKey)
+        {
+            $this->model = $this->model->leftJoin($relatedTable, $localKey, '=', $foreignKey)
+                ->select($this->model->getTable() . '.*', $relatedTable . '.*');
+        }
+
     }
 
 ?>

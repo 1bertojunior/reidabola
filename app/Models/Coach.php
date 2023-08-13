@@ -22,6 +22,16 @@ class Coach extends Model
         return $this->belongsTo(City::class);
     }
 
+    public function teamEditions()
+    {
+        return $this->hasMany(TeamEdition::class, 'coach_id');
+    }
+
+    public function editions()
+    {
+        return $this->hasMany(TeamEdition::class, 'coach_id');
+    }
+
     public static function rules()
     {
         return [

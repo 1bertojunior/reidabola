@@ -31,6 +31,16 @@ class MatchLineup extends Model
         return $this->belongsTo(StatusLineup::class, 'status_lineup_id');
     }
 
+    public function scores()
+    {
+        return $this->hasMany(MatchLineupScore::class, 'match_lineup_id');
+    }
+
+    public function matchGameLineup()
+    {
+        return $this->hasMany(MatchGameLineup::class, 'player_lineup_id');
+    }
+
     public function rules()
     {
         return [

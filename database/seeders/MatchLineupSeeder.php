@@ -11,7 +11,7 @@ use App\Models\Championship;
 use App\Models\ChampionshipEdition;
 use App\Models\ChampionshipRound;
 use App\Models\SoccerMatch;
-use App\Models\MatchGameLineupScore;
+use App\Models\MatchLineupScore;
 
 class MatchLineupSeeder extends Seeder
 {
@@ -129,29 +129,17 @@ class MatchLineupSeeder extends Seeder
             
             $matchLineups[] = $matchLineup;
 
-            // $matchLineupId = $matchLineup->id;
+            $matchLineupId = $matchLineup->id;
 
-            // $matchGameLineupScore = MatchGameLineupScore::where('match_game_lineup_id', $matchLineupId)->first();
+            $matchLineupScore = MatchLineupScore::where('match_lineup_id', $matchLineupId)->first();
 
-            // if($matchGameLineupScore === null){
-            //     $newMatchGameLineupScore = MatchGameLineupScore::create([
-            //         'score' => 6.0,
-            //         'match_game_lineup_id' => $matchLineupId
-            //     ]);
-            // }
-
-            // echo $matchLineupId;
-            // dd($matchGameLineupScore);
-            // echo "\n";
+            if($matchLineupScore == null){
+                $newMatchGameLineupScore = MatchLineupScore::create([
+                    'score' => 6.0,
+                    'match_lineup_id' => $matchLineupId
+                ]);
+            }
         }
-
-
-        // echo sizeof($matchLineups);
-
-        // foreach($matchLineups as $mL){
-        //     dd($mL);
-        // }
-        
         
         return $matchLineups;
     }

@@ -17,6 +17,11 @@ class Team extends Model
         return $this->belongsTo(Championship::class);
     }
 
+    public function editions()
+    {
+        return $this->hasMany(TeamEdition::class, 'team_id');
+    }
+
     public function rules($id = '')
     {
         return [
