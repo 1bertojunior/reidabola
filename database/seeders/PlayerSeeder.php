@@ -68,6 +68,7 @@ class PlayerSeeder extends Seeder
     private function generateFirstName()
     {
         $firstNames = [
+            'Cascade Bala', 'Biru Biru', 'Bombadim', 'Alberto', 'Sulino',
             'Alex', 'Bernardo', 'Caio', 'Diego', 'Eduardo', 'Fábio', 'Gabriel', 'Hugo', 'Ícaro', 'Jorge',
             'Alisson', 'Alberto', 'Tavares', 'Thales', 'Tales', 'Moisés', 'Carlos', 'Messi', 'Cristiano',
             'Ronaldo', 'Fernando', 'Gustavo', 'Henrique', 'Igor', 'Julio', 'Kevin', 'Lucas', 'Marcelo', 'Nelson',
