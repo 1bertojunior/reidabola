@@ -110,6 +110,9 @@ Route::prefix('v1')->group(function () {
 
 
         // App
+        // Home page
+        Route::get('app/home/home', 'App\Http\Controllers\App\Home\HomeHomeController@index');
+
         // Lineup
         Route::get('app/lineup/lineup', 'App\Http\Controllers\App\Lineup\LineupLineupController@index');
         Route::get('app/lineup/player', 'App\Http\Controllers\App\Lineup\PlayerLineupController@index');

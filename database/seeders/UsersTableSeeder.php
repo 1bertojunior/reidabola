@@ -24,7 +24,7 @@ class UsersTableSeeder extends Seeder
             'first_name' => 'Humberto',
             'last_name' => 'Júnior',
             'nick' => '1berto_junior',
-            'password' => '$2y$10$xMuZBxIEBXZuu8MA.sqSVuNPYXpB/.SHrDKHkHK9AgpuHLaqnM6jW',
+            'password' => '$2y$10$/aMD5iKs4g8cnbl8ASon3eWcBusSHG41FivrLUuDPmSgKLmfmnGdu',
             'access_level_id' => 2
 
         ]);

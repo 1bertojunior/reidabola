@@ -30,6 +30,7 @@ class CoachLineupController extends Controller
             ]);
             
             if ($request->has('filter')) {
+                var_dump($request->filter);
                 $teamEditionRepository->filter($request->filter);                
             }
 
