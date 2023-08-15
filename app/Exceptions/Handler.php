@@ -35,55 +35,55 @@ class Handler extends ExceptionHandler
     }
 
     
-    public function render($request, Throwable $exception)
-    {
-        if ($exception instanceof UnauthorizedHttpException && $exception->getMessage() === 'The token has been blacklisted') {
-            return response()->json(['error' => 'The token has been added to the blacklist'], 401);
-        }
+    // public function render($request, Throwable $exception)
+    // {
+    //     if ($exception instanceof UnauthorizedHttpException && $exception->getMessage() === 'The token has been blacklisted') {
+    //         return response()->json(['error' => 'The token has been added to the blacklist'], 401);
+    //     }
 
-        if ($exception instanceof UnauthorizedHttpException && $exception->getMessage() === 'Token not provided') {
-            return response()->json(['error' => 'Token not provided'], 401);
-        }
+    //     if ($exception instanceof UnauthorizedHttpException && $exception->getMessage() === 'Token not provided') {
+    //         return response()->json(['error' => 'Token not provided'], 401);
+    //     }
 
-        if ($exception instanceof UnauthorizedHttpException && $exception->getMessage() === 'Token Signature could not be verified.') {
-            return response()->json(['error' => 'Token signature could not be verified'], 401);
-        }
+    //     if ($exception instanceof UnauthorizedHttpException && $exception->getMessage() === 'Token Signature could not be verified.') {
+    //         return response()->json(['error' => 'Token signature could not be verified'], 401);
+    //     }
 
-        if ($exception instanceof UnauthorizedHttpException) {
-            return response()->json(['error' => 'Unauthorized access'], 401);
-        }
+    //     if ($exception instanceof UnauthorizedHttpException) {
+    //         return response()->json(['error' => 'Unauthorized access'], 401);
+    //     }
 
-        if ($exception instanceof QueryException) {
-            Log::error('Database Error: ' . $exception->getMessage());
-            return response()->json(['error' => 'Database error'], 500);
-        }
+    //     if ($exception instanceof QueryException) {
+    //         Log::error('Database Error: ' . $exception->getMessage());
+    //         return response()->json(['error' => 'Database error'], 500);
+    //     }
 
-        if ($exception instanceof AuthenticationException) {
-            return response()->json(['error' => 'Unauthenticated'], 401);
-        }
+    //     if ($exception instanceof AuthenticationException) {
+    //         return response()->json(['error' => 'Unauthenticated'], 401);
+    //     }
 
-        if ($exception instanceof AuthorizationException) {
-            return response()->json(['error' => 'Unauthorized'], 403);
-        }
+    //     if ($exception instanceof AuthorizationException) {
+    //         return response()->json(['error' => 'Unauthorized'], 403);
+    //     }
 
-        if ($exception instanceof ModelNotFoundException) {
-            return response()->json(['error' => 'Resource not found'], 404);
-        }
+    //     if ($exception instanceof ModelNotFoundException) {
+    //         return response()->json(['error' => 'Resource not found'], 404);
+    //     }
 
-        if ($exception instanceof ThrottleRequestsException) {
-            return response()->json(['error' => 'Too Many Requests'], 429);
-        }
+    //     if ($exception instanceof ThrottleRequestsException) {
+    //         return response()->json(['error' => 'Too Many Requests'], 429);
+    //     }
 
-        if ($exception instanceof MethodNotAllowedHttpException) {
-            return response()->json(['error' => 'Method not allowed'], 405);
-        }
+    //     if ($exception instanceof MethodNotAllowedHttpException) {
+    //         return response()->json(['error' => 'Method not allowed'], 405);
+    //     }
 
-        if ($exception instanceof HttpException) {
-            return response()->json(['error' => 'Route error'], $exception->getStatusCode());
-        }
+    //     if ($exception instanceof HttpException) {
+    //         return response()->json(['error' => 'Route error'], $exception->getStatusCode());
+    //     }
 
-        Log::error('Internal Server Error: ' . $exception->getMessage());
-        return response()->json(['error' => 'Internal server error'], 500);
-    }
+    //     Log::error('Internal Server Error: ' . $exception->getMessage());
+    //     return response()->json(['error' => 'Internal server error'], 500);
+    // }
 
 }

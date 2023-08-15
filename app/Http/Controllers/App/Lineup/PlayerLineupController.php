@@ -7,9 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 use App\Models\MatchLineup;
-use App\Models\MatchLineupScore;
 
-// use App\Repositories\App\Lineup\PlayerLineupRepository;
 use App\Repositories\MatchLineupRepository;
 
 class PlayerLineupController extends Controller
@@ -19,11 +17,13 @@ class PlayerLineupController extends Controller
     {        
         $matchLineup = new MatchLineup();
 
-        try{
+        // try{
             $matchLineupRepository = new MatchLineupRepository($matchLineup);
 
             $matchLineupRepository->joinRelated(
-                'match_lineup_scores', 'match_lineup.id', 'match_lineup_scores.match_lineup_id'
+                'match_lineup_scores', 
+                'match_lineup.id',
+                'match_lineup_scores.match_lineup_id',
             );
 
             $matchLineupRepository
@@ -45,9 +45,9 @@ class PlayerLineupController extends Controller
 
             $result = $matchLineupRepository->getResult();
             return response()->json($result, 200);
-        }catch (\Exception $e) {
-            return response()->json(['error' => 'An error occurred while processing the request.'], 500);
-        }
+        // }catch (\Exception $e) {
+        //     return response()->json(['error' => 'An error occurred while processing the request.'], 500);
+        // }
 
     }
 
