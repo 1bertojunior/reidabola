@@ -17,7 +17,7 @@ class PlayerLineupController extends Controller
     {        
         $matchLineup = new MatchLineup();
 
-        // try{
+        try{
             $matchLineupRepository = new MatchLineupRepository($matchLineup);
 
             $matchLineupRepository->joinRelated(
@@ -45,9 +45,9 @@ class PlayerLineupController extends Controller
 
             $result = $matchLineupRepository->getResult();
             return response()->json($result, 200);
-        // }catch (\Exception $e) {
-        //     return response()->json(['error' => 'An error occurred while processing the request.'], 500);
-        // }
+        }catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while processing the request.'], 500);
+        }
 
     }
 
