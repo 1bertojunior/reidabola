@@ -72,7 +72,7 @@ class HomeHomeController extends Controller
                 
             $result = [
                 'team_game_edition' => $resultTeamGameEdition,
-                'socres' => [
+                'score' => [
                     'last_round' => 0,
                     'patrimony' => $teamGameEditionScore,
                     'last_highest_scorer' =>0
