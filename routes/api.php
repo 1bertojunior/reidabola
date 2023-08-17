@@ -109,9 +109,13 @@ Route::prefix('v1')->group(function () {
         Route::get('matchGameLineupScore/{id}', 'App\Http\Controllers\MatchGameLineupScoreController@show');
 
 
+
         // App
         // Home page
         Route::get('app/home/home', 'App\Http\Controllers\App\Home\HomeHomeController@index');
+
+        // Ranging
+        Route::get('app/ranking/ranking', 'App\Http\Controllers\App\Ranking\RankingRankingController@index');
 
         // Lineup
         Route::get('app/lineup/lineup', 'App\Http\Controllers\App\Lineup\LineupLineupController@index');
