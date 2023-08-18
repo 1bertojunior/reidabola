@@ -66,7 +66,7 @@ class TeamGameEditionController extends Controller
             $teamGameEdition = $this->teamGameEdition->create($request->all());
 
             $teamGameEditionScore = new TeamGameEditionScore();
-            $teamGameEditionScore->score = 100;
+            $teamGameEditionScore->score = 0;
             $teamGameEditionScore->team_game_edition_id = $teamGameEdition->id;
             $teamGameEditionScore->championship_round_id = 1;
             $teamGameEditionScore->save();

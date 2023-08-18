@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\TeamGameEdition;
+use App\Models\TeamGameEditionScore;
+
 
 class TeamGameEditionSeeder extends Seeder
 {
@@ -14,14 +16,27 @@ class TeamGameEditionSeeder extends Seeder
      */
     public function run()
     {
-        TeamGameEdition::create([
+        $team1 = TeamGameEdition::create([
             'team_game_id' => 1,
             'championship_edition_id' => 1
         ]);
 
-        TeamGameEdition::create([
+        $team1Score = TeamGameEditionScore::create([
+            'score' => 0,
+            'team_game_edition_id' => $team1->id,
+            'championship_round_id' => 1
+        ]);
+
+        $team2 = TeamGameEdition::create([
             'team_game_id' => 2,
             'championship_edition_id' => 1
         ]);
+
+        $team2Score = TeamGameEditionScore::create([
+            'score' => 0,
+            'team_game_edition_id' => $team2->id,
+            'championship_round_id' => 1
+        ]);
+
     }
 }

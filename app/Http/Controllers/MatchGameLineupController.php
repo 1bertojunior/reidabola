@@ -71,28 +71,6 @@ class MatchGameLineupController extends Controller
             $this->validate($request, $this->matchGameLineup->rules(), $this->matchGameLineup->feedback());
 
             $matchGameLineup = $this->matchGameLineup->create($request->all());
-            
-            $match_lineup_id = $matchGameLineup->id;
-            $team_game_edition_id = $matchGameLineup->team_game_edition_id;
-            $championship_round_id = $matchGameLineup->championship_round_id;
-            
-            $matchLineupScore = new MatchLineupScore();
-            $result = $matchLineupScore::where('match_lineup_id', '=', $match_lineup_id)->first();
-            $score = $result->score;
-
-            $teamGameEditionScore = new TeamGameEditionScore();
-            $result2 = $teamGameEditionScore
-                ->where('team_game_edition_id', '=', $team_game_edition_id)
-                ->where('championship_round_id', '=', $championship_round_id)
-                ->first();
-
-            if ($result2) {
-                $valueToSubtract = $score; // Substitua pelo valor que você deseja subtrair
-                $result2->score -= $valueToSubtract;
-                $result2->save();
-            }
-            
-            return response()->json($result2, 201);
 
             return response()->json($matchGameLineup, 201);
         } catch (ValidationException $e) {
