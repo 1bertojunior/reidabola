@@ -66,16 +66,14 @@ class HomeHomeController extends Controller
                 ->orderBy('date_time')
                 ->first();
 
-            $teamGameEditionScore = TeamGameEditionScore::where('team_game_edition_id', $resultTeamGameEdition->championship_edition_id)
+            $teamGameEditionScore = $sum = TeamGameEditionScore::where('team_game_edition_id', $resultTeamGameEdition->championship_edition_id)
                 ->where('championship_round_id', $closestMatch->id)
-                ->get();
+                ->sum('score');
                 
             $result = [
                 'team_game_edition' => $resultTeamGameEdition,
                 'score' => [
-                    'last_round' => 0,
                     'patrimony' => $teamGameEditionScore,
-                    'last_highest_scorer' =>0
                 ],
                 'championship_round' => $closestMatch,
 
