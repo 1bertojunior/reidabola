@@ -13,8 +13,6 @@ use App\Models\TeamGameEdition;
 use App\Models\SoccerMatch;
 use App\Models\TeamGameEditionScore;
 
-
-
 use App\Repositories\App\Home\HomeHomeRepository;
 
 class HomeHomeController extends Controller
@@ -22,18 +20,17 @@ class HomeHomeController extends Controller
 
     public function index(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'team_game_edition_id' => 'required|integer|min:1',
-        ]);
-        
         $customMessages = [
             'team_game_edition_id.required' => 'The team_game_edition_id parameter is required.',
             'team_game_edition_id.integer' => 'The team_game_edition_id parameter must be an integer.',
             'team_game_edition_id.min' => 'The team_game_edition_id parameter must be greater than 0.',
+            'team_game_edition_id.exists' => 'The value of the team_game_id field does not exist in the team_game_editions table.',
         ];
-        
-        // $validator->setCustomMessages($customMessages);
-        
+    
+        $validator = Validator::make($request->all(), [
+            'team_game_edition_id' => 'required|integer|min:1|exists:team_game_editions,id',
+        ], $customMessages);
+    
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
         }
@@ -46,7 +43,7 @@ class HomeHomeController extends Controller
         
         $result = $teamGameEdition;
 
-        // try{
+        try{
             $teamGameEditionRepository = new HomeHomeRepository($teamGameEdition);
 
             $teamGameEditionRepository
@@ -67,7 +64,6 @@ class HomeHomeController extends Controller
                 ->first();
 
             $teamGameEditionScore = $sum = TeamGameEditionScore::where('team_game_edition_id', $resultTeamGameEdition->championship_edition_id)
-                ->where('championship_round_id', $closestMatch->id)
                 ->sum('score');
                 
             $result = [
@@ -78,27 +74,12 @@ class HomeHomeController extends Controller
                 'championship_round' => $closestMatch,
 
             ];
-            // return response()->json($resultTeamGameEdition, 200);
+            
             return response()->json($result, 200);
-
-
-
-            
-            
-            // if ($request->has('filter')) {
-            //     $teamEditionRepository->filter($request->filter);                
-            // }
-
-            // if($request->has('att')){
-            //     $teamEditionRepository->selectAttributes($request->att);
-            // }
-
-            
-            // return response()->json($resultTeamGameEdition, 200);
-
-        // }catch (\Exception $e) {
-        //     return response()->json(['error' => 'An error occurred while processing the request.'], 500);
-        // }
+    
+        }catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while processing the request.'], 500);
+        }
 
     }
 

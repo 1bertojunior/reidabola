@@ -7,6 +7,9 @@
 
         protected $model;
 
+        protected $orderByField;
+        protected $orderByDirection = 'asc';
+
         public function __construct(Model $model)
         {
             $this->model = $model;
@@ -65,8 +68,33 @@
         }
 
         public function getResult(){
+            // return $this->model->get();
+            if ($this->orderByField) {
+                $this->model = $this->model->orderBy($this->orderByField, $this->orderByDirection);
+            }
+    
             return $this->model->get();
         }
+
+        public function getSum($field = 'id')
+        {
+            $sum = $this->model->sum($field);
+            return $sum;
+        }
+        
+        public function groupByField($field)
+        {
+            $this->model = $this->model->groupBy($field);
+        }
+
+        public function orderBy($field = 'id', $direction = 'asc')
+        {
+            $this->orderByField = $field;
+            $this->orderByDirection = $direction;
+
+            return $this;
+        }
+        
 
         public function joinRelated($table, $localKey, $foreignKey, array $withRelations = [])
         {
