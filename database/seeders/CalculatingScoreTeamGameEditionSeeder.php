@@ -28,13 +28,6 @@ class CalculatingScoreTeamGameEditionSeeder extends Seeder
         $championship_edition_id = 1;
         $currentDateTime = Carbon::now();
 
-        $championshipRound = SoccerMatch::with('championshipRound')
-                ->where('date_time', '>=', $currentDateTime)
-                ->where('championship_edition_id', '=', $championship_edition_id) // Substitua pelo ID desejado
-                ->orderBy('date_time')
-                ->first();
-
-
         $teamGameEdition = new TeamGameEdition();
         $matchGameLineup = new MatchGameLineup();
 
@@ -96,22 +89,15 @@ class CalculatingScoreTeamGameEditionSeeder extends Seeder
 
             }
 
-            // echo "TeamGameEdtion " . $key . "  SCORE " . $scoreTeamGameEdition->score . "\n" ;
-            // echo "SCORE (TeamGameEdition) " . $score . "\n";
-            // echo "SCORE (TeamGameEdition " . $key . ") " . $score . "\n";
+
         }
 
 
-        // $resultMatchGoalStats = $matchGoalStatsSeeder->get();
+        $targetChampionshipRoundId = 1; // Substitua pelo ID desejado
+        $newDateTime = '2023-10-24 16:00:00';
 
-
-
-        // $teamGameEditionScore = TeamGameEditionScore::where('team_game_edition_id', 1)
-        // ->sum('score');
-
-
-        
-
+        $championshipRound = SoccerMatch::where('championship_round_id', $targetChampionshipRoundId)
+            ->update(['date_time' => $newDateTime]);
 
     }
 
