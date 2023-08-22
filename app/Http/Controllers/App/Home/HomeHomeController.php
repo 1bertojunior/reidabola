@@ -39,7 +39,9 @@ class HomeHomeController extends Controller
 
         $teamGameEdition = new TeamGameEdition();
 
-        $teamGameEdition = $teamGameEdition->find($team_game_edition_id);   
+        $teamGameEdition = $teamGameEdition->find($team_game_edition_id); 
+        
+        echo "teamGameEdition: " .  $team_game_edition_id;
         
         $result = $teamGameEdition;
 
@@ -63,7 +65,7 @@ class HomeHomeController extends Controller
                 ->orderBy('date_time')
                 ->first();
 
-            $teamGameEditionScore = $sum = TeamGameEditionScore::where('team_game_edition_id', $resultTeamGameEdition->championship_edition_id)
+            $teamGameEditionScore = $sum = TeamGameEditionScore::where('team_game_edition_id',  $team_game_edition_id)
                 ->sum('score');
                 
             $result = [
