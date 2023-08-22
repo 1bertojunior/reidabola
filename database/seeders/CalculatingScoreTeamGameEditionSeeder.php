@@ -61,7 +61,7 @@ class CalculatingScoreTeamGameEditionSeeder extends Seeder
                     if($matchCard->card_red) $scores[$teamId] -= 3;               
                 }
 
-                $matchCardsSuffers = $matchCardsStats::where('player_commit_id', $player_lineup_id)->get();
+                $matchCardsSuffers = $matchCardsStats::where('player_suffer_id', $player_lineup_id)->get();
                 foreach ($matchCardsSuffers as $matchCardsSuffer) {
                     if($matchCardsSuffer->card_yellow) $scores[$teamId] += 0.5;
                     if($matchCardsSuffer->card_red) $scores[$teamId] += 1;   
