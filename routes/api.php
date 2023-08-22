@@ -78,6 +78,8 @@ Route::prefix('v1')->group(function () {
         Route::get('teamGame/{id}', 'App\Http\Controllers\TeamGameController@show');        
         Route::post('teamGame', 'App\Http\Controllers\TeamGameController@store');
         Route::post('teamGame/{id}', 'App\Http\Controllers\TeamGameController@update');
+        Route::put('teamGame/{id}', 'App\Http\Controllers\TeamGameController@update');
+        Route::patch('teamGame/{id}', 'App\Http\Controllers\TeamGameController@update');
 
         Route::get('teamGameEdition', 'App\Http\Controllers\TeamGameEditionController@index');
         Route::get('teamGameEdition/{id}', 'App\Http\Controllers\TeamGameEditionController@show');        
