@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
-use App\Models\Player;
 use App\Models\PlayerEdition;
 use App\Repositories\Repository;
 
