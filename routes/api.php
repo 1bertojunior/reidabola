@@ -9,6 +9,7 @@ Route::get('/', function () {
     ];
 });
 
+// VERSION 1
 Route::prefix('v1')->group(function () {
     // AUTH ROUTES PUBLIC
     Route::post('login', 'App\Http\Controllers\AuthController@login');
