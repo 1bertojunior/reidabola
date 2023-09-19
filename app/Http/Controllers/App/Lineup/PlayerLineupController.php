@@ -6,44 +6,36 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
-use App\Models\MatchLineup;
-
-use App\Repositories\MatchLineupRepository;
+use App\Models\Player;
+use App\Models\PlayerEdition;
+use App\Repositories\Repository;
 
 class PlayerLineupController extends Controller
 {
 
     public function index(Request $request)
     {        
-        $matchLineup = new MatchLineup();
+        $playerEdition = new PlayerEdition();
 
         try{
-            $matchLineupRepository = new MatchLineupRepository($matchLineup);
+            $playerEditionRepository = new Repository($playerEdition);
 
-            $matchLineupRepository->joinRelated(
-                'match_lineup_scores', 
-                'match_lineup.id',
-                'match_lineup_scores.match_lineup_id',
-            );
-
-            $matchLineupRepository
+            $playerEditionRepository
                 ->selectAttributesRelated([
-                    'playerEdition.player.position',
-                    'playerEdition.teamEdition.team',
-                    'soccerMatch.championshipEdition.championship',
-                    'soccerMatch.championshipRound',
-                    'statusLineup',
+                    'player.position',
+                    'teamEdition.team',
             ]);
 
             if ($request->has('filter')) {
-                $matchLineupRepository->filter($request->filter);                
+                $playerEditionRepository->filter($request->filter);                
             }
 
             if($request->has('att')){
-                $matchLineupRepository->selectAttributes($request->att);
+                $playerEditionRepository->selectAttributes($request->att);
             }
 
-            $result = $matchLineupRepository->getResult();
+            $result = $playerEditionRepository->getResult();
+
             return response()->json($result, 200);
         }catch (\Exception $e) {
             return response()->json(['error' => 'An error occurred while processing the request.'], 500);
