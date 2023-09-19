@@ -22,6 +22,18 @@ Route::prefix('v1')->group(function () {
         Route::post('me', 'App\Http\Controllers\AuthController@me');
         Route::post('refresh', 'App\Http\Controllers\AuthController@refresh');
 
+        // App
+        // Home page
+        Route::get('app/home/home', 'App\Http\Controllers\App\Home\HomeHomeController@index');
+
+        // Ranging
+        Route::get('app/ranking/ranking', 'App\Http\Controllers\App\Ranking\RankingRankingController@index');
+
+        // Lineup
+        Route::get('app/lineup/lineup', 'App\Http\Controllers\App\Lineup\LineupLineupController@index');
+        Route::get('app/lineup/player', 'App\Http\Controllers\App\Lineup\PlayerLineupController@index');
+        Route::get('app/lineup/coach', 'App\Http\Controllers\App\Lineup\CoachLineupController@index');
+
         // INDEX AND SHOW USER
         Route::get('accessLevel', 'App\Http\Controllers\AccessLevelController@index');
         Route::get('accessLevel/{id}', 'App\Http\Controllers\AccessLevelController@show');
@@ -110,20 +122,6 @@ Route::prefix('v1')->group(function () {
 
         Route::get('matchGameLineupScore', 'App\Http\Controllers\MatchGameLineupScoreController@index');
         Route::get('matchGameLineupScore/{id}', 'App\Http\Controllers\MatchGameLineupScoreController@show');
-
-
-
-        // App
-        // Home page
-        Route::get('app/home/home', 'App\Http\Controllers\App\Home\HomeHomeController@index');
-
-        // Ranging
-        Route::get('app/ranking/ranking', 'App\Http\Controllers\App\Ranking\RankingRankingController@index');
-
-        // Lineup
-        Route::get('app/lineup/lineup', 'App\Http\Controllers\App\Lineup\LineupLineupController@index');
-        Route::get('app/lineup/player', 'App\Http\Controllers\App\Lineup\PlayerLineupController@index');
-        Route::get('app/lineup/coach', 'App\Http\Controllers\App\Lineup\CoachLineupController@index');
 
 
         // ROUTES ADMIN

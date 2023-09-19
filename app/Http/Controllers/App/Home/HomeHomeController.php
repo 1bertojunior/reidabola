@@ -40,10 +40,6 @@ class HomeHomeController extends Controller
         $teamGameEdition = new TeamGameEdition();
 
         $teamGameEdition = $teamGameEdition->find($team_game_edition_id); 
-        
-        // echo "teamGameEdition: " .  $team_game_edition_id;
-        
-        $result = $teamGameEdition;
 
         try{
             $teamGameEditionRepository = new HomeHomeRepository($teamGameEdition);
