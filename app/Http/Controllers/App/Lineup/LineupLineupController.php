@@ -7,80 +7,39 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 use App\Models\MatchGameLineup;
-use App\Repositories\App\Lineup\LineupLineupRepository;
+use App\Repositories\Repository;
 
 class LineupLineupController extends Controller
 {
 
     public function index(Request $request)
     {        
+        try{
 
-        $matchGameLineup = new MatchGameLineup();
+            $matchGameLineup = new MatchGameLineup();
 
-        $lineupLineupRepository = new LineupLineupRepository($matchGameLineup);
+            $lineupLineupRepository = new Repository($matchGameLineup);
 
-        $lineupLineupRepository->joinRelated(
-            'match_lineup_scores', 'match_game_lineups.id', 'match_lineup_scores.match_lineup_id'
-        );
+            $lineupLineupRepository
+                    ->selectAttributesRelated([
+                        'teamGameEdition',
+                        'playerEdition.player.position'
+                ]);
 
-        $lineupLineupRepository
-                ->selectAttributesRelated([
-                    'playerLineup.playerEdition.player.position'
-            ]);
-
-        $result = $lineupLineupRepository->getResult();
-        return response()->json($result, 200);
-
-
-        // $result = MatchGameLineup::join(
-        //     'match_lineup_scores', 'match_game_lineups.id', '=', 'match_lineup_scores.match_lineup_id'
-        // )->with(['playerLineup.playerEdition.player.position'])
-        // ->get();
-
-        // return response()->json($result, 200);
-
-
-        // Aqui
-        
-        // $matchGameLineup = new MatchGameLineup();
-
-        // try{
-        //     $lineupLineupRepository = new LineupLineupRepository($matchGameLineup);
-
-        //     $lineupLineupRepository->joinRelated(
-        //         'match_lineup_scores', 'match_game_lineups.id', 'match_lineup_scores.match_lineup_id'
-        //     );
-
-        //     $lineupLineupRepository
-        //         ->selectAttributesRelated([
-        //             'playerLineup.playerEdition.player.position'
-        //     ]);
-
-        //     // if ($request->has('filter')) {
-        //     //     $lineupLineupRepository->filter($request->filter);                
-        //     // }
+            if ($request->has('filter')) {
+                $lineupLineupRepository->filter($request->filter);                
+            }
             
-        //     if ($request->has('filter')) {
-        //         $lineupLineupRepository->filter($request->filter, 'match_game_lineups');                
-        //     }
+            if($request->has('att')){
+                $lineupLineupRepository->selectAttributes($request->att);
+            }
 
-        //     if($request->has('att')){
-        //         $lineupLineupRepository->selectAttributes($request->att);
-        //     }
+            $result = $lineupLineupRepository->getResult();
 
-        //     $result = $lineupLineupRepository->getResult();
-        //     return response()->json($result, 200);
-        // }catch (\Exception $e) {
-        //     return response()->json(['error' => 'An error occurred while processing the request.'], 500);
-        // }
-
-        // Aqui
-
-        // try{
-           
-        // }catch (\Exception $e) {
-        //     return response()->json(['error' => 'An error occurred while processing the request.'], 500);
-        // }
+            return response()->json($result, 200);
+        }catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while processing the request.'], 500);
+        }
 
     }
 

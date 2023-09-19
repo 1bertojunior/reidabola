@@ -50,9 +50,9 @@ class MatchGameLineup extends Model
         return $this->belongsTo(TeamGameEdition::class, 'team_game_edition_id');
     }
 
-    public function playerLineup()
+    public function playerEdition()
     {
-        return $this->belongsTo(MatchLineup::class, 'player_lineup_id');
+        return $this->belongsTo(PlayerEdition::class, 'player_lineup_id');
     }
 
     public function championshipRound()

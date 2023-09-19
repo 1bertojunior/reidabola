@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ChampionshipRoundSeeder::class);
         $this->call(SoccerMatchSeeder::class);
 
-        // $this->call(SoccerMatchSeeder::class);
+        $this->call(SoccerMatchSeeder::class);
         // $this->call(MatchLineupSeeder::class);
 
         $this->call(AccessLevelSeeder::class);
