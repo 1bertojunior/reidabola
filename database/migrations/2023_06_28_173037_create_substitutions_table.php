@@ -24,8 +24,8 @@ class CreateSubstitutionsTable extends Migration
         
             $table->foreign('soccer_match_id')->references('id')->on('soccer_matches');
             $table->foreign('team_edition_id')->references('id')->on('team_editions');
-            $table->foreign('player_in_id')->references('id')->on('match_lineup');
-            $table->foreign('player_out_id')->references('id')->on('match_lineup');
+            $table->foreign('player_in_id')->references('id')->on('player_editions');
+            $table->foreign('player_out_id')->references('id')->on('player_editions');
         });
         
     }

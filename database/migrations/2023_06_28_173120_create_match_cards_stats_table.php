@@ -24,8 +24,8 @@ class CreateMatchCardsStatsTable extends Migration
             $table->timestamps();
         
             $table->foreign('soccer_match_id')->references('id')->on('soccer_matches');
-            $table->foreign('player_commit_id')->references('id')->on('match_lineup');
-            $table->foreign('player_suffer_id')->references('id')->on('match_lineup');
+            $table->foreign('player_commit_id')->references('id')->on('player_editions');
+            $table->foreign('player_suffer_id')->references('id')->on('player_editions');
         });
         
     }

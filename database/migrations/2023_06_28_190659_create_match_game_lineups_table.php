@@ -22,7 +22,7 @@ class CreateMatchGameLineupsTable extends Migration
             $table->timestamps();
         
             $table->foreign('team_game_edition_id')->references('id')->on('team_game_editions');
-            $table->foreign('player_lineup_id')->references('id')->on('match_lineup');
+            $table->foreign('player_lineup_id')->references('id')->on('player_editions');
             $table->foreign('championship_round_id')->references('id')->on('championship_rounds');
         });
         
