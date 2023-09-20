@@ -22,7 +22,7 @@ class MatchGameLineup extends Model
     {
         return [
             'team_game_edition_id' => 'required|integer|exists:team_game_editions,id',
-            'player_lineup_id' => 'required|integer|exists:match_lineup,id',
+            'player_lineup_id' => 'required|integer|exists:player_editions,id',
             'championship_round_id' => 'required|integer|exists:championship_rounds,id',
             'status' => 'required|boolean'
         ];
@@ -36,7 +36,7 @@ class MatchGameLineup extends Model
             'team_game_edition_id.exists' => 'O valor do campo team_game_edition_id não existe na tabela de team_game_editions.',
             'player_lineup_id.required' => 'O campo player_lineup_id é obrigatório.',
             'player_lineup_id.integer' => 'O campo player_lineup_id deve ser um número inteiro.',
-            'player_lineup_id.exists' => 'O valor do campo player_lineup_id não existe na tabela de match_lineup.',
+            'player_lineup_id.exists' => 'O valor do campo player_lineup_id não existe na tabela de player_editions.',
             'championship_round_id.required' => 'O campo championship_round_id é obrigatório.',
             'championship_round_id.integer' => 'O campo championship_round_id deve ser um número inteiro.',
             'championship_round_id.exists' => 'O valor do campo championship_round_id não existe na tabela de championship_rounds.',

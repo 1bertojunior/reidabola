@@ -26,11 +26,12 @@ Route::prefix('v1')->group(function () {
         // Home page
         Route::get('app/home/home', 'App\Http\Controllers\App\Home\HomeHomeController@index');
 
-        // Ranging
+        // Ranking
         Route::get('app/ranking/ranking', 'App\Http\Controllers\App\Ranking\RankingRankingController@index');
 
         // Lineup
         Route::get('app/lineup/lineup', 'App\Http\Controllers\App\Lineup\LineupLineupController@index');
+        Route::post('app/lineup/lineup', 'App\Http\Controllers\App\Lineup\LineupLineupController@storage');
         Route::get('app/lineup/player', 'App\Http\Controllers\App\Lineup\PlayerLineupController@index');
         Route::get('app/lineup/coach', 'App\Http\Controllers\App\Lineup\CoachLineupController@index');
 
