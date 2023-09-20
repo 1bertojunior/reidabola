@@ -111,4 +111,34 @@ class LineupLineupController extends Controller
         }
     }
 
+    public function update(Request $request)
+    {
+        $team_game_edition_id = $request->input('team_game_edition_id');
+        $championship_round_id = $request->input('championship_round_id');
+        $newIds = $request->input('gameLineup');
+
+        try {
+            $existingIds = $this->matchGameLineup
+                ->where('team_game_edition_id', $team_game_edition_id)
+                ->where('championship_round_id', $championship_round_id)
+                ->get();
+
+            $i = 0;
+
+            foreach($existingIds as $playerEdition){            
+                if( $playerEdition->player_lineup_id != $newIds[$i]){
+                    $playerEdition->update(['player_lineup_id' => $newIds[$i]]);                    
+                }
+                $i++;
+            }
+
+            return response()->json(['message' => 'Update to success', "data" => $existingIds], 200);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to update'], 500);
+        }
+    }
+
+
+
 }

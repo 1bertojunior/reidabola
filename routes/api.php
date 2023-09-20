@@ -32,7 +32,10 @@ Route::prefix('v1')->group(function () {
         // Lineup
         Route::get('app/lineup/lineup', 'App\Http\Controllers\App\Lineup\LineupLineupController@index');
         Route::post('app/lineup/lineup', 'App\Http\Controllers\App\Lineup\LineupLineupController@storage');
+        Route::put('app/lineup/lineup', 'App\Http\Controllers\App\Lineup\LineupLineupController@update');
+        // Lineup / Players
         Route::get('app/lineup/player', 'App\Http\Controllers\App\Lineup\PlayerLineupController@index');
+        // Lineup / Coaches
         Route::get('app/lineup/coach', 'App\Http\Controllers\App\Lineup\CoachLineupController@index');
 
         // INDEX AND SHOW USER
@@ -102,10 +105,6 @@ Route::prefix('v1')->group(function () {
 
         Route::apiResource('matchGameLineup', 'App\Http\Controllers\MatchGameLineupController');
 
-
-        // Route::get('matchCardsStats', 'App\Http\Controllers\MatchCardsStatsController@index');
-        // Route::get('matchCardsStats/{id}', 'App\Http\Controllers\MatchCardsStatsController@show');
-
         Route::get('matchGoalStats', 'App\Http\Controllers\MatchGoalStatsController@index');
         Route::get('matchGoalStats/{id}', 'App\Http\Controllers\MatchGoalStatsController@show');
         
@@ -114,9 +113,6 @@ Route::prefix('v1')->group(function () {
 
         Route::get('playerGameScore', 'App\Http\Controllers\PlayerGameScoreController@index');
         Route::get('playerGameScore/{id}', 'App\Http\Controllers\PlayerGameScoreController@show');
-
-
-
 
         Route::get('teamGameEditionScore', 'App\Http\Controllers\TeamGameEditionScoreController@index');
         Route::get('teamGameEditionScore/{id}', 'App\Http\Controllers\TeamGameEditionScoreController@show');
@@ -195,13 +191,6 @@ Route::prefix('v1')->group(function () {
             Route::delete('teamGame/{id}', 'App\Http\Controllers\TeamGameController@destroy');
 
             Route::delete('teamGameEdition/{id}', 'App\Http\Controllers\TeamGameEditionController@destroy');
-
-
-
-
-            // Route::post('matchCardsStats', 'App\Http\Controllers\MatchCardsStatsController@store');
-            // Route::post('matchCardsStats/{id}', 'App\Http\Controllers\MatchCardsStatsController@update');
-            // Route::delete('matchCardsStats/{id}', 'App\Http\Controllers\MatchCardsStatsController@destroy');
 
             Route::post('matchGoalStats', 'App\Http\Controllers\MatchGoalStatsController@store');
             Route::post('matchGoalStats/{id}', 'App\Http\Controllers\MatchGoalStatsController@update');
