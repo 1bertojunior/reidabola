@@ -5,15 +5,16 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return [
-        "success" => true
+        "success" => true,
+        "version" => env('APP_VERSION')
     ];
 });
 
 // VERSION 1
 Route::prefix('v1')->group(function () {
     // AUTH ROUTES PUBLIC
-    Route::post('login', 'App\Http\Controllers\AuthController@login');
-    Route::post('register', 'App\Http\Controllers\AuthController@register');
+    Route::post('login', 'App\Http\Controllers\Auth\AuthController@login');
+    Route::post('register', 'App\Http\Controllers\Auth\AuthController@register');
 
     // PROTECTED
     Route::middleware('jwt.auth')->group(function(){
