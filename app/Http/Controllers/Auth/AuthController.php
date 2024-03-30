@@ -1,13 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+// namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
 use App\Models\AccessLevel;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends Controller
 {
@@ -74,12 +77,14 @@ class AuthController extends Controller
         ]);
     }
 
-    public function refresh(){
-        $token = auth('api')->refresh();
-
-        return response()->json( [
-            'token' => $token,
-        ] );
+    public function refresh(Request $request)
+    {
+        try {
+            $token = JWTAuth::parseToken()->refresh();
+            return response()->json(['token' => $token]);
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'Não foi possível atualizar o token'], 500);
+        }
     }
 
     public function me(){
