@@ -70,10 +70,12 @@ class AuthController extends Controller
     }
 
     public function logout(){
-        auth('api')->logout();
-        return response()->json([
-            'msg' => 'Logout realziado com sucesso',
-        ]);
+        try {
+            Auth::logout();
+            return response()->json(['message' => 'Logout realizado com sucesso']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Ocorreu um erro ao tentar realizar o logout'], 500);
+        }
     }
 
     public function refresh(Request $request)
