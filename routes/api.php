@@ -3,12 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return [
-        "success" => true,
-        "version" => env('APP_VERSION')
-    ];
-});
+
+Route::get('/test', 'App\Http\Controllers\TestController@test');
 
 // VERSION 1
 Route::prefix('v1')->group(function () {
