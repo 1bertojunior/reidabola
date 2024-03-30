@@ -89,6 +89,11 @@ class AuthController extends Controller
     }
 
     public function me(){
-        return response()->json( auth()->user() );
+        try {
+            $user = JWTAuth::user(); 
+            return response()->json(['user' => $user]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Ocorreu um erro ao tentar recuperar o usuário'], 500);
+        }
     }
 }
